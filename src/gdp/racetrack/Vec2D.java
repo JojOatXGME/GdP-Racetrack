@@ -11,11 +11,11 @@ public class Vec2D {
 	}
 
 	public Vec2D add(Vec2D vec) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return new Vec2D(this.x + vec.x, this.y + vec.y);
 	}
 
 	public Vec2D mul(int factor) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return new Vec2D(factor * this.x, factor * this.y);
 	}
 
 }
