@@ -11,6 +11,15 @@ public abstract class Rule {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
+	/**
+	 * Check whether the given turn would be allowed or not.
+	 * <br>
+	 * 
+	 * 
+	 * @param player
+	 * @param position
+	 * @return
+	 */
 	public boolean isTurnAllowed(Player player, Vec2D position) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
