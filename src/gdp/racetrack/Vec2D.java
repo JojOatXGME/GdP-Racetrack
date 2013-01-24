@@ -39,12 +39,31 @@ public class Vec2D {
 	}
 
 	/**
+	 * Subtract the given vector from this vector and return the difference.
+	 * @param subtrahend The subtrahend to subtract from this vector
+	 * @return The difference of the subtraction
+	 */
+	public Vec2D sub(Vec2D subtrahend) {
+		return new Vec2D(this.x - subtrahend.x, this.y - subtrahend.y);
+	}
+
+	/**
 	 * Multiply the vector with the given integer and returns the product.
 	 * @param factor The factor to multiply with
 	 * @return The product of the multiplication
 	 */
 	public Vec2D mul(int factor) {
 		return new Vec2D(factor * this.x, factor * this.y);
+	}
+
+	/**
+	 * Negate the vector and return the result.
+	 * <br>
+	 * The vector [x,y] returns the vector [-x,-y].
+	 * @return The inverse vector
+	 */
+	public Vec2D negate() {
+		return new Vec2D(-this.x, -this.y);
 	}
 
 }
