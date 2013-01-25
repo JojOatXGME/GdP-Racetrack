@@ -32,7 +32,7 @@ public class Game {
 	 * @return The map of this game
 	 */
 	public Map getMap() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return map;
 	}
 
 	/**
@@ -40,7 +40,16 @@ public class Game {
 	 * @return The game rule of this game
 	 */
 	public RuleCombination getRule() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return rule;
+	}
+
+	/**
+	 * Gets the specific player.
+	 * @param index The index of the player you wand to have
+	 * @return The specific player
+	 */
+	public Player getPlayer(int index) {
+		return players[index];
 	}
 
 	/**
@@ -48,7 +57,7 @@ public class Game {
 	 * @return The players which play this game
 	 */
 	public Player[] getPlayers() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return players;
 	}
 
 	/**
@@ -64,13 +73,14 @@ public class Game {
 	 * Pause the game.
 	 * <br>
 	 * It will end the run-Method in the next time.
+	 * @throws IllegalStateException if the game have already finished
 	 */
 	public void pause() {
 		synchronized(this) {
 			if (state == State.FINISHED)
 				throw new IllegalStateException("The game can't pasue if it is finished");
 			
-			state = state.PAUSED;
+			state = State.PAUSED;
 		}
 	}
 
@@ -78,6 +88,7 @@ public class Game {
 	 * Start or continue the game.
 	 * <br>
 	 * This method will run and block your sequence until the game is finished or paused.
+	 * @throws IllegalStateException if the game is already running or finished
 	 */
 	public void run() {
 		if (state == State.RUNNING)
