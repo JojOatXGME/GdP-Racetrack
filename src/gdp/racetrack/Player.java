@@ -8,13 +8,13 @@ public abstract class Player {
 	private final LinkedList<Vec2D> turnHistory = new LinkedList<Vec2D>();
 
 	/**
-	 * Does the turn of the player and return the "ortsvector" for the destination.
-	 * @return The destination point of this turn
+	 * Elaborate the next turn of the player and return its destination.
+	 * @return The destination point of the next turn
 	 */
 	public abstract Vec2D turn();
 
 	/**
-	 * Gets the actual position of this player as Vec2D from bottom left corner.
+	 * Gets the actual position of the player as Vec2D from bottom left corner.
 	 * @return The position of the player
 	 */
 	public final Vec2D getPosition() {
@@ -31,7 +31,7 @@ public abstract class Player {
 
 	/**
 	 * Gets a history of the movements of the player.
-	 * Return points or velocities?
+	 * use points or velocities?
 	 * @return History of movements
 	 */
 	public final List<Vec2D> getTurnHistory() {
