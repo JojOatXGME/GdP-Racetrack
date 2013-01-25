@@ -1,13 +1,13 @@
 package gdp.racetrack;
 
-public abstract class Rule {
+public abstract class RuleCombination {
 
 	private final EnvironmentCollisionRule environmentCollisionRule;
 	private final PlayerCollisionRule playerCollisionRule;
 	private final TurnRule turnRule;
 	private final VictoryRule victoryRule;
 
-	public Rule(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule) {
+	public RuleCombination(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 

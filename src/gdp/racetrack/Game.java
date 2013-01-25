@@ -4,7 +4,7 @@ public class Game {
 
 	private final Map map;
 	private final Player[] players;
-	private final Rule rule;
+	private final RuleCombination rule;
 
 	/**
 	 * Creates a new game.
@@ -13,7 +13,7 @@ public class Game {
 	 * @param players The players which play the game
 	 * @param rule The used rules of the game
 	 */
-	public Game(Map map, Player[] players, Rule rule) {
+	public Game(Map map, Player[] players, RuleCombination rule) {
 		this.map = map;
 		this.players = players;
 		this.rule = rule;
@@ -31,7 +31,7 @@ public class Game {
 	 * Gets the game rule of this game.
 	 * @return The game rule of this game
 	 */
-	public Rule getRule() {
+	public RuleCombination getRule() {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
