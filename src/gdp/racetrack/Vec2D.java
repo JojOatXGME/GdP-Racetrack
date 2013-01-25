@@ -59,8 +59,9 @@ public class Vec2D {
 	/**
 	 * Negate the vector and return the result.
 	 * <br>
-	 * The vector [x,y] returns the vector [-x,-y].
-	 * @return The inverse vector
+	 * This means it will be returned the inverse element of the vector
+	 * with respect to the addition. The vector [x,y] would returns the vector [-x,-y].
+	 * @return The negative vector of this
 	 */
 	public Vec2D negate() {
 		return new Vec2D(-this.x, -this.y);
