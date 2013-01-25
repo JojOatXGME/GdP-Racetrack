@@ -24,7 +24,7 @@ public abstract class RuleCombination {
 	/**
 	 * Gets all allowed turns which the given player can do.
 	 * @param player The Player to be checked for
-	 * @return A array of points, where the player can move to
+	 * @return A array of points where the player can move to
 	 */
 	public Vec2D[] getAllowedTurns(Player player) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
