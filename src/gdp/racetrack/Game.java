@@ -2,9 +2,17 @@ package gdp.racetrack;
 
 public class Game {
 
+	enum State {
+		RUNNING,
+		PAUSED,
+		FINISHED
+	}
+
 	private final Map map;
 	private final Player[] players;
 	private final RuleCombination rule;
+
+	private State state = State.PAUSED;
 
 	/**
 	 * Creates a new game.
@@ -41,6 +49,45 @@ public class Game {
 	 */
 	public Player[] getPlayers() {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
+	}
+
+	/**
+	 * Gets the current state of the game.
+	 * There are 3 possibilities. The game is running, paused or finished.
+	 * @return The state of the game
+	 */
+	public State getState() {
+		return state;
+	}
+
+	/**
+	 * Pause the game.
+	 * <br>
+	 * It will end the run-Method in the next time.
+	 */
+	public void pause() {
+		synchronized(this) {
+			if (state == State.FINISHED)
+				throw new IllegalStateException("The game can't pasue if it is finished");
+			
+			state = state.PAUSED;
+		}
+	}
+
+	/**
+	 * Start or continue the game.
+	 * <br>
+	 * This method will run and block your sequence until the game is finished or paused.
+	 */
+	public void run() {
+		if (state == State.RUNNING)
+			throw new IllegalStateException("The game is already running");
+		if (state == State.FINISHED)
+			throw new IllegalStateException("The game have finished and there is nothing to do");
+		
+		while (state == State.RUNNING) {
+			
+		}
 	}
 
 }
