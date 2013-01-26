@@ -1,6 +1,7 @@
 package gdp.racetrack;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 public class Map {
 
@@ -25,6 +26,28 @@ public class Map {
 		 */
 		FINISH
 	}
+	
+	public Map(BufferedImage image) {
+		mapImage = image;
+		mapData = new PointType[image.getWidth()][image.getHeight()];
+		for(int x=0; x<image.getWidth(); x++){
+			for(int y=0; y<image.getHeight(); y++){
+				switch(image.getRGB(x,y)&0xFFFFFF){
+					case COLOR_TRACK:
+						mapData[x][y] = PointType.TRACK;
+						break;
+					case COLOR_START:
+						mapData[x][y] = PointType.START;
+						break;
+					case COLOR_FINISH:
+						mapData[x][y] = PointType.FINISH;
+						break;
+					default:
+						mapData[x][y] = PointType.NONE;
+				}				
+			}
+		}
+	}
 
 	/**
 	 * Checks whether the given Point is an port of the track or not.
@@ -36,7 +59,7 @@ public class Map {
 	 * @return true if the point is part of the track, false otherwise
 	 */
 	public boolean isTrack(Point point) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return mapData[point.getVec().x*16][point.getVec().y*16] != PointType.NONE;
 	}
 
 	/**
@@ -45,7 +68,7 @@ public class Map {
 	 * @return The Type of the point
 	 */
 	public PointType getPointType(Point point) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return mapData[point.getVec().x*16][point.getVec().y*16];
 	}
 
 	/**
@@ -53,7 +76,7 @@ public class Map {
 	 * @return The size of the map
 	 */
 	public Vec2D getSize() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return new Vec2D(mapImage.getWidth(null), mapImage.getHeight(null));
 	}
 
 	/**
@@ -64,7 +87,15 @@ public class Map {
 	 * @return The image of the map
 	 */
 	public Image getImage() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return mapImage;
 	}
+	
+
+	private final PointType mapData[][];
+ 	private final Image mapImage;
+ 	public static final int COLOR_TRACK  = 0xFFFFFF;
+ 	public static final int COLOR_START  = 0xFF0000;
+ 	public static final int COLOR_FINISH = 0x00FF00;
+	public static final int COLOR_BACKGROUND = 0xDCDCDC;
 
 }
