@@ -43,6 +43,7 @@ public class Point {
 	 * Check whether the point is a part of the track or not.
 	 * <br>
 	 * This method use Map.isTrack(Point).
+	 * 
 	 * @return true if the point is part of the track, false otherwise
 	 */
 	public boolean isTrack() {
@@ -53,6 +54,7 @@ public class Point {
 	 * Gets the Type of the point on the map.
 	 * <br>
 	 * This method use Map.getPointType(Point) to gets the type.
+	 * 
 	 * @return The Type of the point
 	 */
 	public PointType getType() {
