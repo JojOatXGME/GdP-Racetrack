@@ -39,10 +39,22 @@ public class Point {
 		return new Point(vec.mul(factor), map);
 	}
 
+	/**
+	 * Check whether the point is a part of the track or not.
+	 * <br>
+	 * This method use Map.isTrack(Point).
+	 * @return true if the point is part of the track, false otherwise
+	 */
 	public boolean isTrack() {
 		return map.isTrack(this);
 	}
 
+	/**
+	 * Gets the Type of the point on the map.
+	 * <br>
+	 * This method use Map.getPointType(Point) to gets the type.
+	 * @return The Type of the point
+	 */
 	public PointType getType() {
 		return map.getPointType(this);
 	}
