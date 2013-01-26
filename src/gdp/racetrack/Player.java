@@ -11,13 +11,13 @@ public abstract class Player {
 	 * Elaborate the next turn of the player and return its destination.
 	 * @return The destination point of the next turn
 	 */
-	public abstract Vec2D turn();
+	public abstract Point turn();
 
 	/**
 	 * Gets the actual position of the player as Vec2D from bottom left corner.
 	 * @return The position of the player
 	 */
-	public final Vec2D getPosition() {
+	public final Point getPosition() {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
@@ -42,7 +42,7 @@ public abstract class Player {
 	 * Sets the position of this player.
 	 * @param position The new position of the player
 	 */
-	public final void setPosition(Vec2D position) {
+	public final void setPosition(Point position) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
