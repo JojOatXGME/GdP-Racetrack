@@ -83,6 +83,7 @@ public class Map {
 	 * Gets an Image of map.
 	 * <br>
 	 * [Better description?]
+	 * 
 	 * @return The image of the map
 	 */
 	public Image getImage() {

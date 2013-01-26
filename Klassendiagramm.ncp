@@ -77,7 +77,7 @@
       <Entity type="Class">
         <Name>MapGenerator</Name>
         <Access>Public</Access>
-        <Location left="788" top="845" />
+        <Location left="731" top="847" />
         <Size width="174" height="94" />
         <Collapsed>False</Collapsed>
         <Member type="Method">public Map generateMap(int seed)</Member>
@@ -97,7 +97,7 @@
         <Member type="Method">public boolean isTurnAllowed(Player player, Vec2D position)</Member>
         <Member type="Method">public Vec2D[] getAllowedTurns(Player player)</Member>
         <Member type="Method">public Player getWinner()</Member>
-        <Modifier>Abstract</Modifier>
+        <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>Vec2D</Name>
@@ -174,10 +174,10 @@
         <Location left="88" top="784" />
         <Size width="163" height="129" />
         <Collapsed>False</Collapsed>
-        <Value>None</Value>
-        <Value>Track</Value>
-        <Value>Start</Value>
-        <Value>Finish</Value>
+        <Value>NONE</Value>
+        <Value>TRACK</Value>
+        <Value>START</Value>
+        <Value>FINISH</Value>
       </Entity>
       <Entity type="Interface">
         <Name>EventListener</Name>
