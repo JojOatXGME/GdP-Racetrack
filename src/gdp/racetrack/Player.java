@@ -22,7 +22,8 @@ public abstract class Player {
 	}
 
 	/**
-	 * Gets the "velocity" of the move in last turn of the player.
+	 * Gets the current "velocity" of the player.
+	 * It is normally the way which the player moved in the last round.
 	 * @return The velocity of the last move
 	 */
 	public final Vec2D getVelocity() {
@@ -42,8 +43,16 @@ public abstract class Player {
 	 * Sets the position of this player.
 	 * @param position The new position of the player
 	 */
-	public final void setPosition(Point position) {
+	final void setPosition(Point position) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
+	}
+
+	/**
+	 * Sets the velocity of this player.
+	 * @param velocity The new velocity of the player
+	 */
+	final void setVelocity(Vec2D velocity) {
+		
 	}
 
 }
