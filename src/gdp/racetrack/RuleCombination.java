@@ -1,6 +1,6 @@
 package gdp.racetrack;
 
-public abstract class RuleCombination {
+public class RuleCombination {
 
 	private final EnvironmentCollisionRule environmentCollisionRule;
 	private final PlayerCollisionRule playerCollisionRule;
