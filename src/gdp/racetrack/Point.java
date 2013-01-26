@@ -15,6 +15,14 @@ public class Point {
 		this.map = map;
 	}
 
+	public int getX() {
+		return vec.x;
+	}
+
+	public int getY() {
+		return vec.y;
+	}
+
 	public Vec2D getVec() {
 		return vec;
 	}
