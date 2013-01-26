@@ -6,8 +6,17 @@ import java.util.List;
 public class Game {
 
 	public enum State {
+		/**
+		 * The Game is running.
+		 */
 		RUNNING,
+		/**
+		 * The game don't run but is not finished.
+		 */
 		PAUSED,
+		/**
+		 * The game is finished.
+		 */
 		FINISHED
 	}
 
@@ -18,6 +27,7 @@ public class Game {
 	private final List<EventListener> listeners = new ArrayList<>();
 
 	private State state = State.PAUSED;
+	private Player winner = null;
 
 	/**
 	 * Creates a new game.
@@ -101,8 +111,31 @@ public class Game {
 		if (state == State.FINISHED)
 			throw new IllegalStateException("The game have finished and there is nothing to do");
 		
+		state = State.RUNNING;
 		while (state == State.RUNNING) {
+			for (Player player : players) {
+				final Vec2D velocity = player.getVelocity();
+				final Point start = player.getPosition();
+				final Point destination = player.turn();
+				
+				if (!rule.isTurnAllowed(player, destination))
+					throw new IllegalTurnException("The turn of "+player+" is not allowed");
+				if (player.getPosition() != start)
+					throw new IllegalTurnException(player+" had manipulate his position");
+				if (player.getVelocity() != velocity)
+					throw new IllegalTurnException(player+" had manipulate his velocity");
+				
+				// TODO: handle turn
+				
+				onPlayerTurn(player, start, player.getPosition(), destination);
+			}
 			
+			synchronized (this) {
+				winner = rule.getWinner();
+				if (winner != null) {
+					state = State.FINISHED;
+				}
+			}
 		}
 	}
 
