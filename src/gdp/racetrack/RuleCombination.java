@@ -17,7 +17,7 @@ public class RuleCombination {
 	 * @param destination The destination of the requested turn
 	 * @return true if the turn would be allowed or false otherwise
 	 */
-	public boolean isTurnAllowed(Player player, Vec2D destination) {
+	public boolean isTurnAllowed(Player player, Point destination) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
