@@ -16,7 +16,7 @@
         <Name>Game</Name>
         <Access>Public</Access>
         <Location left="312" top="589" />
-        <Size width="315" height="264" />
+        <Size width="315" height="281" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private final Map map</Member>
         <Member type="Field">private final Player[] players</Member>
@@ -29,6 +29,7 @@
         <Member type="Method">public State getState()</Member>
         <Member type="Method">public void pause()</Member>
         <Member type="Method">public void run()</Member>
+        <Member type="Method">public void registerListener(EventListener listener)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -76,7 +77,7 @@
       <Entity type="Class">
         <Name>MapGenerator</Name>
         <Access>Public</Access>
-        <Location left="701" top="752" />
+        <Location left="788" top="845" />
         <Size width="174" height="94" />
         <Collapsed>False</Collapsed>
         <Member type="Method">public Map generateMap(int seed)</Member>
@@ -101,7 +102,7 @@
       <Entity type="Class">
         <Name>Vec2D</Name>
         <Access>Public</Access>
-        <Location left="701" top="513" />
+        <Location left="788" top="54" />
         <Size width="189" height="196" />
         <Collapsed>False</Collapsed>
         <Member type="Field">public final int x</Member>
@@ -177,6 +178,15 @@
         <Value>Track</Value>
         <Value>Start</Value>
         <Value>Finish</Value>
+      </Entity>
+      <Entity type="Interface">
+        <Name>EventListener</Name>
+        <Access>Public</Access>
+        <Location left="731" top="534" />
+        <Size width="480" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void onPlayerTurn(Player player, Point startPoint, Point endPoint, Point destinationPoint)</Member>
+        <Member type="Method">void onUpdateMap(Map map)</Member>
       </Entity>
     </Entities>
     <Relationships>
@@ -279,6 +289,14 @@
       <Relationship type="Nesting" first="5" second="16">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="1" second="17">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
       </Relationship>
     </Relationships>
   </ProjectItem>

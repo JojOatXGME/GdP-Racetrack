@@ -1,8 +1,11 @@
 package gdp.racetrack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
 
-	enum State {
+	public enum State {
 		RUNNING,
 		PAUSED,
 		FINISHED
@@ -11,6 +14,8 @@ public class Game {
 	private final Map map;
 	private final Player[] players;
 	private final RuleCombination rule;
+
+	private final List<EventListener> listeners = new ArrayList<>();
 
 	private State state = State.PAUSED;
 
@@ -98,6 +103,31 @@ public class Game {
 		
 		while (state == State.RUNNING) {
 			
+		}
+	}
+
+	/**
+	 * Registers an EventListener to call it by events.
+	 * @param listener The EventListener to register
+	 */
+	public void registerListener(EventListener listener) {
+		if (listener == null)
+			throw new IllegalArgumentException("EventListener can not be null");
+		
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	private void onPlayerTurn(Player player, Point startPoint,Point endPoint, Point destinationPoint) {
+		for (EventListener l : listeners) {
+			l.onPlayerTurn(player, startPoint, endPoint, destinationPoint);
+		}
+	}
+
+	private void onMapUpdate(Map map) {
+		for (EventListener l : listeners) {
+			l.onMapUpdate(map);
 		}
 	}
 
