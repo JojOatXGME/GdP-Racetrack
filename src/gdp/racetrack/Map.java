@@ -29,7 +29,7 @@ public class Map {
 	 * @param point The point to check the type
 	 * @return The Type of the point
 	 */
-	public boolean getPointType(Point point) {
+	public PointType getPointType(Point point) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
