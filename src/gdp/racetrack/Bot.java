@@ -1,3 +1,5 @@
+package vectorAce;
+
 import java.awt.Point;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -12,24 +14,24 @@ public class Bot extends Player {
 			super(x, y);
 		}
 
-		Position translocate(Vector vector) {
-			return new Position(x + vector.x, y + vector.y);
+		Position translocate(Velocity Velocity) {
+			return new Position(x + Velocity.x, y + Velocity.y);
 		}
 
 		static final long serialVersionUID = 1L;
 	}
 
-	private static class Vector extends Point {
-		Vector(int x, int y) {
+	private static class Velocity extends Point {
+		Velocity(int x, int y) {
 			super(x, y);
 		}
 
-		Vector accelerate(Acceleration acceleration) {
-			return new Vector(x + acceleration.x, y + acceleration.y);
+		Velocity accelerate(Acceleration acceleration) {
+			return new Velocity(x + acceleration.x, y + acceleration.y);
 		}
 
-		Vector revert() {
-			return new Vector(-x, -y);
+		Velocity revert() {
+			return new Velocity(-x, -y);
 		}
 
 		static final long serialVersionUID = 1L;
@@ -50,27 +52,25 @@ public class Bot extends Player {
 
 	public static HashSet<Point> track;
 	public static final HashMap<Point, Integer> goaldist = new HashMap<Point, Integer>();
-	private static Point mapsize;
 	public static final Acceleration[] offsets = new Acceleration[] { new Acceleration(-1, -1), new Acceleration(-1, 0), new Acceleration(-1, 1),
 			new Acceleration(0, -1), new Acceleration(0, 1), new Acceleration(1, -1), new Acceleration(1, 0), new Acceleration(1, 1) };
 	public static final int maxspeed = 6;
-	public static final HashSet<Vector> speedvectors;
+	public static final HashSet<Velocity> speedVelocitys;
 	static {
-		HashSet<Vector> vectors = new HashSet<Vector>();
-		vectors.add(new Vector(0, 0));
-		HashSet<Vector> newvectors = new HashSet<Vector>();
-		for (int i = 0; i < maxspeed; i++, vectors = newvectors, newvectors = new HashSet<Vector>())
-			for (Vector vector : vectors)
+		HashSet<Velocity> Velocitys = new HashSet<Velocity>();
+		Velocitys.add(new Velocity(0, 0));
+		HashSet<Velocity> newVelocitys = new HashSet<Velocity>();
+		for (int i = 0; i < maxspeed; i++, Velocitys = newVelocitys, newVelocitys = new HashSet<Velocity>())
+			for (Velocity Velocity : Velocitys)
 				for (Acceleration offset : offsets)
-					newvectors.add(vector.accelerate(offset));
-		speedvectors = vectors;
+					newVelocitys.add(Velocity.accelerate(offset));
+		speedVelocitys = Velocitys;
 	}
 
-	public static final HashMap<Entry<Point, Vector>, HashSet<Vector>> nextvector = new HashMap<Entry<Point, Vector>, HashSet<Vector>>();
+	public static final HashMap<Entry<Point, Velocity>, HashSet<Velocity>> nextVelocity = new HashMap<Entry<Point, Velocity>, HashSet<Velocity>>();
 
-	public static void analyseTrack(HashSet<Point> track, ArrayList<Position> goal, Point mapsize) {
-		KI.track = track;
-		KI.mapsize = mapsize;
+	public static void analyseTrack(HashSet<Point> track, ArrayList<Position> goal) {
+		Bot.track = track;
 //		ArrayList<Position> Positions = goal;
 //		for (int dist = 0; !Positions.isEmpty(); dist++) {
 //			ArrayList<Position> newPositions = new ArrayList<Position>();
@@ -83,28 +83,48 @@ public class Bot extends Player {
 //				}
 //			Positions = newPositions;
 //		}
-		HashMap<Entry<Position, Vector>, HashSet<Acceleration>> newvectormap = new HashMap<Entry<Position, Vector>, HashSet<Acceleration>>();
+		HashMap<Entry<Position, Velocity>, HashSet<Acceleration>> newVelocitymap = new HashMap<Entry<Position, Velocity>, HashSet<Acceleration>>();
 		for (Position Position : goal)
-			for (Vector speedvector : speedvectors)
-				newvectormap.put(new AbstractMap.SimpleImmutableEntry<Position, Vector>(Position, speedvector), null);
-		while (!newvectormap.isEmpty()) {
-			HashMap<Entry<Position, Vector>, HashSet<Acceleration>> newnewvectormap = new HashMap<Entry<Position, Vector>, HashSet<Acceleration>>();
-			for (Entry<Position, Vector> winconfig : newvectormap.keySet()) {
+			for (Velocity speedVelocity : speedVelocitys)
+				newVelocitymap.put(new AbstractMap.SimpleImmutableEntry<Position, Velocity>(Position, speedVelocity), null);
+		while (!newVelocitymap.isEmpty()) {
+			HashMap<Entry<Position, Velocity>, HashSet<Acceleration>> newnewVelocitymap = new HashMap<Entry<Position, Velocity>, HashSet<Acceleration>>();
+			for (Entry<Position, Velocity> winconfig : newVelocitymap.keySet()) {
 				Position pullposition = winconfig.getKey().translocate(winconfig.getValue().revert());
 				if (track.contains(pullposition))
 					for (Acceleration offset : offsets) {
-						Vector pullvector = winconfig.getValue().accelerate(offset);
-						newnewvectormap.get(new AbstractMap.SimpleImmutableEntry<Position, Vector>(pullposition, pullvector)).add(offset.revert());
+						Velocity pullVelocity = winconfig.getValue().accelerate(offset);
+						newnewVelocitymap.get(new AbstractMap.SimpleImmutableEntry<Position, Velocity>(pullposition, pullVelocity)).add(offset.revert());
 					}
 			}
 		}
 	}
 
-//	private static boolean onMap(Point point) {
-//		return point.x >= 0 && point.y >= 0 && point.x < mapsize.y && point.y < mapsize.y;
-//	}
+	private Position position;
+	private Velocity velocity = new Velocity(0, 0);
 
-	public Acceleration turn() {
-		return offsets[(int) (Math.random() * 8)];
+	public Bot(Position position) {
+		super();
+		this.position = position;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public Velocity getVelocity() {
+		return velocity;
+	}
+	
+	public void setPosition(Point position) {
+		this.position=new Position(position.x,position.y);
+	}
+	
+	public void setVelocity(Point position) {
+		this.velocity=new Velocity(position.x,position.y);
+	}
+
+	public Position getTurn() {
+		return getPosition().translocate(getVelocity().accelerate(offsets[(int) (Math.random() * 8)]));
 	}
 }
