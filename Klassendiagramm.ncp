@@ -20,10 +20,10 @@
         <Collapsed>False</Collapsed>
         <Member type="Field">private final Map map</Member>
         <Member type="Field">private final Player[] players</Member>
-        <Member type="Field">private final RuleCombination rule</Member>
-        <Member type="Constructor">public Game(Map map, Player[] players, RuleCombination rule)</Member>
+        <Member type="Field">private final RuleSet rule</Member>
+        <Member type="Constructor">public Game(Map map, Player[] players, RuleSet rule)</Member>
         <Member type="Method">public Map getMap()</Member>
-        <Member type="Method">public RuleCombination getRule()</Member>
+        <Member type="Method">public RuleSet getRule()</Member>
         <Member type="Method">public Player getPlayer(int index)</Member>
         <Member type="Method">public Player[] getPlayers()</Member>
         <Member type="Method">public State getState()</Member>
@@ -85,7 +85,7 @@
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
-        <Name>RuleCombination</Name>
+        <Name>RuleSet</Name>
         <Access>Public</Access>
         <Location left="88" top="967" />
         <Size width="708" height="213" />
@@ -94,7 +94,7 @@
         <Member type="Field">private final PlayerCollisionRule playerCollisionRule</Member>
         <Member type="Field">private final TurnRule turnRule</Member>
         <Member type="Field">private final VictoryRule victoryRule</Member>
-        <Member type="Constructor">public RuleCombination(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule)</Member>
+        <Member type="Constructor">public RuleSet(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule)</Member>
         <Member type="Method">public boolean isTurnAllowed(Player player, Vec2D position)</Member>
         <Member type="Method">public Vec2D[] getAllowedTurns(Player player)</Member>
         <Member type="Method">public Player getWinner()</Member>
@@ -200,42 +200,56 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="1" second="7">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="0" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="4" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="10">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="11">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="12">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="13">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -246,12 +260,16 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="1" second="5">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="1" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Bidirectional</Direction>
@@ -274,6 +292,8 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="1" second="17">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
