@@ -22,7 +22,7 @@ public class Game {
 
 	private final Map map;
 	private final Player[] players;
-	private final RuleCombination rule;
+	private final RuleSet rule;
 
 	private final List<EventListener> listeners = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class Game {
 	 * @param players The players which play the game
 	 * @param rule The used rules of the game
 	 */
-	public Game(Map map, Player[] players, RuleCombination rule) {
+	public Game(Map map, Player[] players, RuleSet rule) {
 		this.map = map;
 		this.players = players;
 		this.rule = rule;
@@ -54,7 +54,7 @@ public class Game {
 	 * Gets the game rule of this game.
 	 * @return The game rule of this game
 	 */
-	public RuleCombination getRule() {
+	public RuleSet getRule() {
 		return rule;
 	}
 
