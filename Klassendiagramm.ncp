@@ -35,22 +35,25 @@
       <Entity type="Class">
         <Name>Player</Name>
         <Access>Public</Access>
-        <Location left="490" top="277" />
-        <Size width="196" height="196" />
+        <Location left="519" top="278" />
+        <Size width="345" height="247" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private final LinkedList&lt;Vec2D&gt; turnHistory = new LinkedList&lt;Vec2D&gt;()</Member>
         <Member type="Method">public abstract Vec2D turn()</Member>
+        <Member type="Method">public final Game getGame()</Member>
         <Member type="Method">public final Vec2D getPosition()</Member>
         <Member type="Method">public final Vec2D getVelocity()</Member>
         <Member type="Method">public final List&lt;Vec2D&gt; getTurnHistory()</Member>
-        <Member type="Method">final void setPosition(Vec2D position)</Member>
-        <Member type="Method">void setVelocity(Vec2D velocity)</Member>
+        <Member type="Method">public final void setPosition(Vec2D position)</Member>
+        <Member type="Method">public final void setVelocity(Vec2D velocity)</Member>
+        <Member type="Method">protected void onLoad()</Member>
+        <Member type="Method">protected void onUpdatePosition(Point oldPos, Point newPoint)</Member>
+        <Member type="Method">protected void onUpdateVelocity(Vec2D oldVelocity, Vec2D newVelocity)</Member>
         <Modifier>Abstract</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>Bot</Name>
         <Access>Public</Access>
-        <Location left="788" top="328" />
+        <Location left="954" top="358" />
         <Size width="163" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -183,7 +186,7 @@
       <Entity type="Interface">
         <Name>EventListener</Name>
         <Access>Public</Access>
-        <Location left="731" top="534" />
+        <Location left="703" top="589" />
         <Size width="480" height="111" />
         <Collapsed>False</Collapsed>
         <Member type="Method">void onPlayerTurn(Player player, Point startPoint, Point endPoint, Point destinationPoint)</Member>
@@ -198,58 +201,52 @@
           <X>428</X>
           <Y>156</Y>
         </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>494</X>
+          <Y>343</Y>
+        </BendPoint>
       </Relationship>
       <Relationship type="Association" first="1" second="7">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="0" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>438</X>
+          <Y>564</Y>
+        </BendPoint>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="4" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="10">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="11">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="12">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="13">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -260,18 +257,18 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="1" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="1" second="2">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>485</X>
+          <Y>473</Y>
+        </BendPoint>
         <Direction>Bidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
@@ -292,8 +289,6 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="1" second="17">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
