@@ -8,19 +8,19 @@ import java.util.Map.Entry;
 
 public class Bot extends Player {
 
-	private static class Position extends java.awt.Point {
-		Position(int x, int y) {
-			super(x, y);
+	private static class Position extends Point {
+		Position(int x, int y, Map map) {
+			super(x, y, map);
 		}
 
 		Position translocate(Velocity Velocity) {
-			return new Position(x + Velocity.x, y + Velocity.y);
+			return new Position(x + Velocity.x, y + Velocity.y, getMap());
 		}
 
 		static final long serialVersionUID = 1L;
 	}
 
-	private static class Velocity extends java.awt.Point {
+	private static class Velocity extends Vec2D {
 		Velocity(int x, int y) {
 			super(x, y);
 		}
@@ -37,7 +37,7 @@ public class Bot extends Player {
 
 	}
 
-	private static class Acceleration extends java.awt.Point {
+	private static class Acceleration extends Vec2D {
 		Acceleration(int x, int y) {
 			super(x, y);
 		}
@@ -109,7 +109,7 @@ public class Bot extends Player {
 
 	@Override
 	protected void onUpdatePosition(Point oldPos, Point newPos) {
-		this.position = new Position(newPos.getX(), newPos.getY());
+		this.position = new Position(newPos.getX(), newPos.getY(), newPos.getMap());
 	}
 
 	@Override
