@@ -1,5 +1,6 @@
 package gdp.racetrack;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -106,7 +107,7 @@ public abstract class Player {
 	 * @return History of positions
 	 */
 	public final List<Vec2D> getTurnHistory() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return Collections.unmodifiableList(turnHistory);
 	}
 
 	/**
