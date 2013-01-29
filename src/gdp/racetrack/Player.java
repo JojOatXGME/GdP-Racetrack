@@ -29,14 +29,43 @@ public abstract class Player {
 	 */
 	public abstract Point turn();
 
+	/**
+	 * Will be called when the Player has loaded.
+	 * <br>
+	 * The only sense of this method is to override it.
+	 * {@link #getGame()} don't work before this method was called.
+	 * You can use this method to initial the player.
+	 */
 	protected void onLoad() {
 		// do nothing
 	}
 
+	/**
+	 * Will be called when the position of the player has changed.
+	 * <br>
+	 * The only sense of this method is to override it.
+	 * Use it to handle changes of the position.
+	 * This method will be called after the changes was made.
+	 * {@link #getPosition()} will already return the new position.
+	 * 
+	 * @param oldPos Position of the player before it has changed
+	 * @param newPos Position of the player after it has changed
+	 */
 	protected void onUpdatePosition(Point oldPos, Point newPos) {
 		// do nothing
 	}
 
+	/**
+	 * Will be called when the velocity of the player has changed.
+	 * <br>
+	 * The only sense of this method is to override it.
+	 * Use it to handle changes of the velocity.
+	 * This method will be called after the changes was made.
+	 * {@link #getVelocity()} will already return the new velocity.
+	 * 
+	 * @param oldVelocity Velocity of the player before it has changed
+	 * @param newVelocity Velocity of the player after it has changed
+	 */
 	protected void onUpdateVelocity(Vec2D oldVelocity, Vec2D newVelocity) {
 		// do nothing
 	}
