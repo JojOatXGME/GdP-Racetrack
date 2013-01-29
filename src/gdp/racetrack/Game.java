@@ -40,6 +40,13 @@ public class Game {
 		this.map = map;
 		this.players = players;
 		this.rule = rule;
+		
+		// initial player
+		for (Player player : players) {
+			player.init(this);
+		}
+		
+		// TODO: all player must pick a start
 	}
 
 	/**
