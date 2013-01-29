@@ -73,7 +73,7 @@ public abstract class Player {
 
 	// --- --- Player logic --- ---
 
-	private final LinkedList<Vec2D> turnHistory = new LinkedList<Vec2D>();
+	private final LinkedList<Point> turnHistory = new LinkedList<>();
 
 	private Point position = null;
 	private Vec2D velocity = null;
@@ -106,18 +106,26 @@ public abstract class Player {
 	 * Gets a history of positions of the player.
 	 * @return History of positions
 	 */
-	public final List<Vec2D> getTurnHistory() {
+	public final List<Point> getTurnHistory() {
 		return Collections.unmodifiableList(turnHistory);
 	}
 
 	/**
 	 * Sets the position of this player.
+	 * <br>
+	 * This will also set a new velocity after the other changes was made.
 	 * @param position The new position of the player
 	 */
 	public final void setPosition(Point position) {
 		Point oldPos = this.position;
+		// update position
 		this.position = position;
+		// add entry in turn history
+		turnHistory.offerFirst(position);
+		// event to handle changes
 		onUpdatePosition(oldPos, position);
+		// update velocity
+		setVelocity(position.getVec().sub(oldPos.getVec()));
 	}
 
 	/**
@@ -126,7 +134,9 @@ public abstract class Player {
 	 */
 	public final void setVelocity(Vec2D velocity) {
 		Vec2D oldVelocity = this.velocity;
+		// update velocity
 		this.velocity = velocity;
+		// event to handle changes
 		onUpdateVelocity(oldVelocity, velocity);
 	}
 
