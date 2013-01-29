@@ -104,4 +104,36 @@ public class Point {
 		return map.getPointType(this);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((map == null) ? 0 : map.hashCode());
+		result = prime * result + ((vec == null) ? 0 : vec.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		Point other = (Point) obj;
+		if (map == null) {
+			if (other.map != null)
+				return false;
+		} else if (!map.equals(other.map))
+			return false;
+		if (vec == null) {
+			if (other.vec != null)
+				return false;
+		} else if (!vec.equals(other.vec))
+			return false;
+		return true;
+	}
+
 }
