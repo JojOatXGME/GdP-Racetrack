@@ -1,7 +1,5 @@
 package gdp.racetrack;
 
-import gdp.racetrack.Map.PointType;
-
 public class Point {
 	@Deprecated public final int x;
 	@Deprecated public final int y;
