@@ -46,6 +46,14 @@ public class Point {
 	}
 
 	/**
+	 * Gets the Map in which the point is set.
+	 * @return The Map of this point
+	 */
+	public Map getMap() {
+		return map;
+	}
+
+	/**
 	 * Check whether the point is a part of the track or not.
 	 * <br>
 	 * This method use Map.isTrack(Point).
