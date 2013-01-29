@@ -140,4 +140,9 @@ public abstract class Player {
 		onUpdateVelocity(oldVelocity, velocity);
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName()+" "+super.toString();
+	}
+
 }
