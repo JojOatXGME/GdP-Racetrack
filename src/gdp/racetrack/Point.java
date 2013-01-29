@@ -3,6 +3,9 @@ package gdp.racetrack;
 import gdp.racetrack.Map.PointType;
 
 public class Point {
+	@Deprecated public final int x;
+	@Deprecated public final int y;
+
 	private final Vec2D vec;
 	private final Map map;
 
@@ -13,6 +16,9 @@ public class Point {
 	public Point(Vec2D vec, Map map) {
 		this.vec = vec;
 		this.map = map;
+		
+		this.x = vec.x;
+		this.y = vec.y;
 	}
 
 	public int getX() {
