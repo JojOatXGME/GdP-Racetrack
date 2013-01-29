@@ -1,6 +1,5 @@
-package vectorAce;
+package gdp.racetrack;
 
-import java.awt.Point;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +8,7 @@ import java.util.Map.Entry;
 
 public class Bot extends Player {
 
-	private static class Position extends Point {
+	private static class Position extends java.awt.Point {
 		Position(int x, int y) {
 			super(x, y);
 		}
@@ -21,7 +20,7 @@ public class Bot extends Player {
 		static final long serialVersionUID = 1L;
 	}
 
-	private static class Velocity extends Point {
+	private static class Velocity extends java.awt.Point {
 		Velocity(int x, int y) {
 			super(x, y);
 		}
@@ -38,7 +37,7 @@ public class Bot extends Player {
 
 	}
 
-	private static class Acceleration extends Point {
+	private static class Acceleration extends java.awt.Point {
 		Acceleration(int x, int y) {
 			super(x, y);
 		}
@@ -108,23 +107,19 @@ public class Bot extends Player {
 		this.position = position;
 	}
 
-	public Position getPosition() {
-		return position;
+	@Override
+	protected void onUpdatePosition(Point oldPos, Point newPos) {
+		this.position = new Position(newPos.getX(), newPos.getY());
 	}
 
-	public Velocity getVelocity() {
-		return velocity;
-	}
-	
-	public void setPosition(Point position) {
-		this.position=new Position(position.x,position.y);
-	}
-	
-	public void setVelocity(Point position) {
-		this.velocity=new Velocity(position.x,position.y);
+	@Override
+	protected void onUpdateVelocity(Vec2D oldVelocity, Vec2D newVelocity) {
+		this.velocity = new Velocity(newVelocity.x, newVelocity.y);
 	}
 
-	public Position getTurn() {
-		return getPosition().translocate(getVelocity().accelerate(offsets[(int) (Math.random() * 8)]));
+	@Override
+	public Point turn() {
+		Position p = position.translocate(velocity.accelerate(offsets[(int) (Math.random() * 8)]));
+		return new Point(p.x, p.y, getGame().getMap());
 	}
 }
