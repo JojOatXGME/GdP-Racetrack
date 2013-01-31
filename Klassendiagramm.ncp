@@ -81,17 +81,17 @@
       <Entity type="Class">
         <Name>MapGenerator</Name>
         <Access>Public</Access>
-        <Location left="731" top="847" />
+        <Location left="746" top="784" />
         <Size width="174" height="94" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">public Map generateMap(int seed)</Member>
+        <Member type="Method">public Map generateMap(int seed, int numberPlayers, Difficulty difficulty)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>RuleSet</Name>
         <Access>Public</Access>
         <Location left="88" top="967" />
-        <Size width="708" height="213" />
+        <Size width="708" height="230" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private final EnvironmentCollisionRule environmentCollisionRule</Member>
         <Member type="Field">private final PlayerCollisionRule playerCollisionRule</Member>
@@ -101,6 +101,7 @@
         <Member type="Method">public boolean isTurnAllowed(Player player, Vec2D position)</Member>
         <Member type="Method">public Vec2D[] getAllowedTurns(Player player)</Member>
         <Member type="Method">public Player getWinner()</Member>
+        <Member type="Method">public Turn[] getAllowedTurns(Point position, Vec2D velocity)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -144,10 +145,12 @@
         <Name>TurnRule</Name>
         <Access>Public</Access>
         <Location left="531" top="1257" />
-        <Size width="303" height="111" />
+        <Size width="303" height="145" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">public Vec2D[] getAllowedTurns(Player player)</Member>
-        <Member type="Method">public boolean isTurnAllowed(Player player, Vec2D position)</Member>
+        <Member type="Method">public Point[] getAllowedTurns(Player player)</Member>
+        <Member type="Method">public Point[] getAllowedTurns(Point position, Vec2D velocity)</Member>
+        <Member type="Method">public boolean isTurnAllowed(Player player, Vec2D newPosition)</Member>
+        <Member type="Method">public boolean isTurnAllowed()</Member>
       </Entity>
       <Entity type="Interface">
         <Name>VictoryRule</Name>
@@ -191,6 +194,16 @@
         <Collapsed>False</Collapsed>
         <Member type="Method">void onPlayerTurn(Player player, Point startPoint, Point endPoint, Point destinationPoint)</Member>
         <Member type="Method">void onUpdateMap(Map map)</Member>
+      </Entity>
+      <Entity type="Enum">
+        <Name>Difficulty</Name>
+        <Access>Public</Access>
+        <Location left="852" top="934" />
+        <Size width="163" height="112" />
+        <Collapsed>False</Collapsed>
+        <Value>EASY</Value>
+        <Value>NORMAL</Value>
+        <Value>HARD</Value>
       </Entity>
     </Entities>
     <Relationships>
