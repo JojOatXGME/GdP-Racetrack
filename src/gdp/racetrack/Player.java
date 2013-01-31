@@ -13,7 +13,7 @@ public abstract class Player {
 		// do nothing
 	}
 
-	protected final void init(Game game) {
+	final void init(Game game) {
 		if (game != null)
 			throw new IllegalStateException("The player is already initialized");
 		
