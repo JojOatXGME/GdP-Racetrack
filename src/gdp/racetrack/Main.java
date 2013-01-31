@@ -8,9 +8,9 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
+		// TODO if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
 			test(); return;
-		}
+		// TODO }
 	}
 
 	private static void test() {
