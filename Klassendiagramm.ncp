@@ -19,13 +19,12 @@
         <Size width="315" height="281" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private final Map map</Member>
-        <Member type="Field">private final Player[] players</Member>
         <Member type="Field">private final RuleSet rule</Member>
-        <Member type="Constructor">public Game(Map map, Player[] players, RuleSet rule)</Member>
+        <Member type="Field">private final List&lt;Player&gt; players</Member>
+        <Member type="Constructor">public Game(Map map, RuleSet rule, Player[] players)</Member>
         <Member type="Method">public Map getMap()</Member>
         <Member type="Method">public RuleSet getRule()</Member>
-        <Member type="Method">public Player getPlayer(int index)</Member>
-        <Member type="Method">public Player[] getPlayers()</Member>
+        <Member type="Method">public List&lt;Player&gt; getPlayers()</Member>
         <Member type="Method">public State getState()</Member>
         <Member type="Method">public void pause()</Member>
         <Member type="Method">public void run()</Member>
@@ -61,7 +60,7 @@
       <Entity type="Class">
         <Name>HumanPlayer</Name>
         <Access>Public</Access>
-        <Location left="357" top="54" />
+        <Location left="312" top="54" />
         <Size width="163" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -194,10 +193,13 @@
         <Name>EventListener</Name>
         <Access>Public</Access>
         <Location left="703" top="589" />
-        <Size width="480" height="111" />
+        <Size width="480" height="162" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">void onPlayerTurn(Player player, Point startPoint, Point endPoint, Point destinationPoint)</Member>
-        <Member type="Method">void onUpdateMap(Map map)</Member>
+        <Member type="Method">public void onGameStart(boolean firstTime)</Member>
+        <Member type="Method">public void onGamePause()</Member>
+        <Member type="Method">public void onGameFinished()</Member>
+        <Member type="Method">public void onPlayerChooseStart(Player player)</Member>
+        <Member type="Method">public void onPlayerTurn(Player player, Point startPoint, Point endPoint, Point destinationPoint)</Member>
       </Entity>
       <Entity type="Enum">
         <Name>Difficulty</Name>
@@ -215,7 +217,7 @@
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>428</X>
+          <X>383</X>
           <Y>156</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
@@ -224,12 +226,16 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="1" second="7">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="0" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -239,31 +245,33 @@
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
-      <Relationship type="Association" first="4" second="0">
-        <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-        <Direction>Unidirectional</Direction>
-        <AssociationType>Association</AssociationType>
-      </Relationship>
       <Relationship type="Association" first="7" second="10">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="11">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="12">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="13">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -274,12 +282,16 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="1" second="5">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="1" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -302,12 +314,16 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="1" second="17">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="5" second="16">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>

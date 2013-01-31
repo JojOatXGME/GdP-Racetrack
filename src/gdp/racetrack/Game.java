@@ -3,11 +3,16 @@ package gdp.racetrack;
 import gdp.racetrack.Turn.TurnType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Game {
 
 	public enum State {
+		/**
+		 * The game does never run yet.
+		 */
+		PREPARING,
 		/**
 		 * The Game is running.
 		 */
@@ -23,12 +28,13 @@ public class Game {
 	}
 
 	private final Map map;
-	private final Player[] players;
 	private final RuleSet rule;
+	private final List<Player> players;
+	private final List<Player> playersUnmodifiable;
 
 	private final List<EventListener> listeners = new ArrayList<EventListener>();
 
-	private State state = State.PAUSED;
+	private State state = State.PREPARING;
 	private Player winner = null;
 
 	/**
@@ -38,17 +44,18 @@ public class Game {
 	 * @param players The players which play the game
 	 * @param rule The used rules of the game
 	 */
-	public Game(Map map, Player[] players, RuleSet rule) {
+	public Game(Map map, RuleSet ruleSet, Player[] players) {
 		this.map = map;
-		this.players = players;
-		this.rule = rule;
+		this.rule = ruleSet;
+		this.players = new ArrayList<Player>();
 		
-		// initial player
-		for (Player player : players) {
-			player.init(this);
+		this.playersUnmodifiable = Collections.unmodifiableList(this.players);
+		
+		if (players != null) {
+			for (Player p : players) {
+				this.players.add(p);
+			}
 		}
-		
-		// TODO: all player must pick a start
 	}
 
 	/**
@@ -68,25 +75,22 @@ public class Game {
 	}
 
 	/**
-	 * Gets the specific player.
-	 * @param index The index of the player you wand to have
-	 * @return The specific player
-	 */
-	public Player getPlayer(int index) {
-		return players[index];
-	}
-
-	/**
 	 * Gets the players which play this game.
+	 * This method will throw a {@link IllegalStateException} if you call
+	 * it while the game is preparing.
 	 * @return The players which play this game
 	 */
-	public Player[] getPlayers() {
-		return players;
+	public List<Player> getPlayers() {
+		if (state == State.PREPARING)
+			throw new IllegalStateException("The game must be ready to get informations like that");
+		
+		return playersUnmodifiable;
 	}
 
 	/**
 	 * Gets the current state of the game.
-	 * There are 3 possibilities. The game is running, paused or finished.
+	 * There are 4 possibilities.
+	 * The game can be preparing, running, paused or finished.
 	 * @return The state of the game
 	 */
 	public State getState() {
@@ -94,15 +98,30 @@ public class Game {
 	}
 
 	/**
+	 * Gets the winner of the game.
+	 * If this method is called while the game is not finished,
+	 * it will throw a {@link IllegalStateException}.
+	 * @return The winner of the game
+	 */
+	public Player getWinner() throws IllegalStateException {
+		if (state != State.FINISHED)
+			throw new IllegalStateException("Game must be finished to get a winner");
+		
+		return winner;
+	}
+
+	/**
 	 * Pause the game.
 	 * <br>
 	 * It will end the run-Method in the next time.
-	 * @throws IllegalStateException if the game have already finished
+	 * @throws IllegalStateException if the game have already finished or has never run
 	 */
 	public void pause() {
 		synchronized(this) {
 			if (state == State.FINISHED)
-				throw new IllegalStateException("The game can't pasue if it is finished");
+				throw new IllegalStateException("Can not pause the game when it is finished");
+			if (state == State.PREPARING)
+				throw new IllegalStateException("Can not pause the game when it was never started");
 			
 			state = State.PAUSED;
 		}
@@ -112,6 +131,8 @@ public class Game {
 	 * Start or continue the game.
 	 * <br>
 	 * This method will run and block your sequence until the game is finished or paused.
+	 * If you call this method while the it is running or already finished,
+	 * it will throw a {@link IllegalStateException}.
 	 * @throws IllegalStateException if the game is already running or finished
 	 */
 	public void run() {
@@ -120,7 +141,32 @@ public class Game {
 		if (state == State.FINISHED)
 			throw new IllegalStateException("The game have finished and there is nothing to do");
 		
+		boolean firstRun = (state == State.PREPARING);
 		state = State.RUNNING;
+		
+		if (firstRun) {
+			// initial player
+			int i = 1;
+			for (Player p : players) {
+				p.init(this, i++);
+			}
+			
+			List<Point> startPoints = new ArrayList<Point>(); // TODO: get possible start positions
+			List<Point> unmodifiable = Collections.unmodifiableList(startPoints);
+			for (Player player : players) {
+				Point selected = player.chooseStart(unmodifiable);
+				if (!startPoints.contains(selected))
+					throw new IllegalTurnException(player+" has selected an illigal start position");
+				
+				player.setPosition(selected);
+				onPlayerChooseStart(player);
+				
+				startPoints.remove(selected);
+			}
+		}
+		
+		onGameStart(firstRun);
+		
 		while (state == State.RUNNING) {
 			for (Player player : players) {
 				final Vec2D velocity = player.getVelocity();
@@ -152,6 +198,12 @@ public class Game {
 				}
 			}
 		}
+		
+		if (state == State.PAUSED) {
+			onGamePause();
+		} else if (state == State.FINISHED) {
+			onGameFinished();
+		}
 	}
 
 	/**
@@ -167,15 +219,33 @@ public class Game {
 		}
 	}
 
-	private void onPlayerTurn(Player player, Point startPoint,Point endPoint, Point destinationPoint) {
+	private void onGameStart(boolean firstTime) {
 		for (EventListener l : listeners) {
-			l.onPlayerTurn(player, startPoint, endPoint, destinationPoint);
+			l.onGameStart(firstTime);
 		}
 	}
 
-	private void onMapUpdate(Map map) {
+	private void onGamePause() {
 		for (EventListener l : listeners) {
-			l.onMapUpdate(map);
+			l.onGamePause();
+		}
+	}
+
+	private void onGameFinished() {
+		for (EventListener l : listeners) {
+			l.onGameFinished();
+		}
+	}
+
+	private void onPlayerChooseStart(Player player) {
+		for (EventListener l : listeners) {
+			l.onPlayerChooseStart(player);
+		}
+	}
+
+	private void onPlayerTurn(Player player, Point startPoint,Point endPoint, Point destinationPoint) {
+		for (EventListener l : listeners) {
+			l.onPlayerTurn(player, startPoint, endPoint, destinationPoint);
 		}
 	}
 

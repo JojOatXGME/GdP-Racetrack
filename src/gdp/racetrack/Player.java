@@ -6,18 +6,16 @@ import java.util.List;
 
 public abstract class Player {
 	private Game game = null;
+	private int playerNumber;
 
 	// --- --- Initialization part --- ---
 
-	public Player() {
-		// do nothing
-	}
-
-	final void init(Game game) {
+	final void init(Game game, int playerNumber) {
 		if (game != null)
 			throw new IllegalStateException("The player is already initialized");
 		
 		this.game = game;
+		this.playerNumber = playerNumber;
 		
 		onLoad();
 	}
@@ -28,7 +26,14 @@ public abstract class Player {
 	 * Elaborate the next turn of the player and return its destination.
 	 * @return The destination point of the next turn
 	 */
-	public abstract Point turn();
+	protected abstract Point turn();
+
+	/**
+	 * Gets the point where the player wand to start.
+	 * @param possiblePositions A list of possible positions to start
+	 * @return The point where the player wand to start
+	 */
+	protected abstract Point chooseStart(List<Point> possiblePositions);
 
 	/**
 	 * Will be called when the Player has loaded.
@@ -48,6 +53,8 @@ public abstract class Player {
 	 * Use it to handle changes of the position.
 	 * This method will be called after the changes was made.
 	 * {@link #getPosition()} will already return the new position.
+	 * The first call is when the player has choose its start position.
+	 * oldPos will be null in this situation.
 	 * 
 	 * @param oldPos Position of the player before it has changed
 	 * @param newPos Position of the player after it has changed
@@ -74,9 +81,14 @@ public abstract class Player {
 	// --- --- Player logic --- ---
 
 	private final LinkedList<Point> turnHistory = new LinkedList<>();
+	private final List<Point> turnHistoryUnmodifiable;
 
 	private Point position = null;
 	private Vec2D velocity = null;
+
+	public Player() {
+		turnHistoryUnmodifiable = Collections.unmodifiableList(turnHistory);
+	}
 
 	public final Game getGame() {
 		if (game == null)
@@ -107,7 +119,7 @@ public abstract class Player {
 	 * @return History of positions
 	 */
 	public final List<Point> getTurnHistory() {
-		return Collections.unmodifiableList(turnHistory);
+		return turnHistoryUnmodifiable;
 	}
 
 	/**
@@ -124,8 +136,6 @@ public abstract class Player {
 		turnHistory.offerFirst(position);
 		// event to handle changes
 		onUpdatePosition(oldPos, position);
-		// update velocity
-		setVelocity(position.getVec().sub(oldPos.getVec()));
 	}
 
 	/**
@@ -142,7 +152,7 @@ public abstract class Player {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+" "+super.toString();
+		return "Player "+playerNumber+" ("+getClass().getSimpleName()+")";
 	}
 
 }
