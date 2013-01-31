@@ -1,5 +1,7 @@
 package gdp.racetrack;
 
+import gdp.racetrack.Turn.TurnType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,15 +126,21 @@ public class Game {
 				final Vec2D velocity = player.getVelocity();
 				final Point start = player.getPosition();
 				final Point destination = player.turn();
+				final Turn turn = rule.getTurnResult(player, destination);
 				
-				if (!rule.isTurnAllowed(player, destination))
+				if (turn.getTurnType() == TurnType.FORBIDDEN)
 					throw new IllegalTurnException("The turn of "+player+" is not allowed");
 				if (player.getPosition() != start)
 					throw new IllegalTurnException(player+" had manipulate his position");
 				if (player.getVelocity() != velocity)
 					throw new IllegalTurnException(player+" had manipulate his velocity");
 				
-				// TODO: handle turn
+				player.setPosition(turn.getNewPosition());
+				player.setVelocity(turn.getNewVelocity());
+				if (turn.getAffectedPlayer() != null) {
+					turn.getAffectedPlayer().setPosition(turn.getAffectedPlayerInfo().getNewPos());
+					turn.getAffectedPlayer().setVelocity(turn.getAffectedPlayerInfo().getVelocity());
+				}
 				
 				onPlayerTurn(player, start, player.getPosition(), destination);
 			}

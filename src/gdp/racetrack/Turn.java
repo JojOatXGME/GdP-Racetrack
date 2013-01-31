@@ -32,6 +32,14 @@ public class Turn {
 	public TurnType getTurnType () {
 		return turnType;
 	}
+
+	public Player getAffectedPlayer() {
+		return affectedPlayer;
+	}
+
+	public PlayerInfo getAffectedPlayerInfo() {
+		return affectedPlayerInfo;
+	}
 	
 	private final Point newPosition;
 	private final Vec2D newVelocity;
