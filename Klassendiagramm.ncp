@@ -99,11 +99,11 @@
         <Member type="Field">private final TurnRule turnRule</Member>
         <Member type="Field">private final VictoryRule victoryRule</Member>
         <Member type="Constructor">public RuleSet(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule)</Member>
-        <Member type="Method">public Player getWinner()</Member>
-        <Member type="Method">public boolean isTurnAllowed(Player player, Point destination)</Member>
-        <Member type="Method">public boolean isTurnAllowed(Point position, Vec2D velocity, Point destination)</Member>
+        <Member type="Method">public boolean getTurnResult(Player player, Point destination)</Member>
+        <Member type="Method">public boolean getTurnResult(Point start, Point destination)</Member>
         <Member type="Method">public Turn[] getAllowedTurns(Player player)</Member>
         <Member type="Method">public Turn[] getAllowedTurns(Point position, Vec2D velocity)</Member>
+        <Member type="Method">public Player getWinner()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -224,16 +224,12 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="1" second="7">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="0" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -244,40 +240,30 @@
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="4" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="10">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="11">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="12">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="7" second="13">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -288,16 +274,12 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="1" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="1" second="2">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="False">
@@ -320,16 +302,12 @@
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="1" second="17">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Association</AssociationType>
       </Relationship>
       <Relationship type="Association" first="5" second="16">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>

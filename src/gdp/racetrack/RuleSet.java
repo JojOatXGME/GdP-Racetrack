@@ -2,13 +2,16 @@ package gdp.racetrack;
 
 public class RuleSet {
 
-	private final EnvironmentCollisionRule environmentCollisionRule;
+	private final EnvironmentCollisionRule envCollisionRule;
 	private final PlayerCollisionRule playerCollisionRule;
 	private final TurnRule turnRule;
 	private final VictoryRule victoryRule;
 
-	public RuleSet(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+	public RuleSet(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule victoryRule) {
+		this.envCollisionRule = envCollisionRule;
+		this.playerCollisionRule = playerCollisionRule;
+		this.turnRule = turnRule;
+		this.victoryRule = victoryRule;
 	}
 
 	/**
@@ -17,7 +20,7 @@ public class RuleSet {
 	 * @param destination The destination of the requested turn
 	 * @return true if the turn would be allowed or false otherwise
 	 */
-	public boolean isTurnAllowed(Player player, Point destination) {
+	public Turn getTurnResult(Player player, Point destination) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
@@ -28,7 +31,7 @@ public class RuleSet {
 	 * @param destination The destination of the requested turn
 	 * @return true if the turn would be allowed or false otherwise
 	 */
-	public boolean isTurnAllowed(Point position, Vec2D velocity, Point destination) {
+	public Turn getTurnResult(Point start, Point destination) {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 
