@@ -70,12 +70,13 @@
         <Name>Map</Name>
         <Access>Public</Access>
         <Location left="48" top="589" />
-        <Size width="192" height="145" />
+        <Size width="192" height="162" />
         <Collapsed>False</Collapsed>
         <Member type="Method">public boolean isTrack(Point point)</Member>
         <Member type="Method">public PointType getPointType(Point point)</Member>
         <Member type="Method">public Vec2D getSize()</Member>
         <Member type="Method">public Image getImage()</Member>
+        <Member type="Method">public Turn getTurnResult(Point start, Point end)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
@@ -122,7 +123,7 @@
       <Entity type="Class">
         <Name>BounceEnvCollision</Name>
         <Access>Public</Access>
-        <Location left="48" top="1577" />
+        <Location left="389" top="1690" />
         <Size width="162" height="216" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -130,21 +131,23 @@
       <Entity type="Interface">
         <Name>EnvironmentCollisionRule</Name>
         <Access>Public</Access>
-        <Location left="48" top="1257" />
-        <Size width="162" height="216" />
+        <Location left="88" top="1481" />
+        <Size width="244" height="94" />
         <Collapsed>False</Collapsed>
+        <Member type="Method">void handleCollision(PlayerInfo info)</Member>
       </Entity>
       <Entity type="Interface">
         <Name>PlayerCollisionRule</Name>
         <Access>Public</Access>
-        <Location left="296" top="1257" />
-        <Size width="162" height="216" />
+        <Location left="282" top="1268" />
+        <Size width="261" height="94" />
         <Collapsed>False</Collapsed>
+        <Member type="Method">void handleCollision(PlayerInfo actor, PlayerInfo victim)</Member>
       </Entity>
       <Entity type="Interface">
         <Name>TurnRule</Name>
         <Access>Public</Access>
-        <Location left="531" top="1257" />
+        <Location left="631" top="1268" />
         <Size width="303" height="145" />
         <Collapsed>False</Collapsed>
         <Member type="Method">public Point[] getAllowedTurns(Player player)</Member>
@@ -155,14 +158,14 @@
       <Entity type="Interface">
         <Name>VictoryRule</Name>
         <Access>Public</Access>
-        <Location left="411" top="1515" />
+        <Location left="505" top="1481" />
         <Size width="163" height="94" />
         <Collapsed>False</Collapsed>
         <Member type="Method">public Player getWinner()</Member>
       </Entity>
       <Entity type="Comment">
         <Text>Bsp:</Text>
-        <Location left="77" top="1672" />
+        <Location left="418" top="1785" />
         <Size width="102" height="50" />
       </Entity>
       <Entity type="Enum">
@@ -178,7 +181,7 @@
       <Entity type="Enum">
         <Name>PointType</Name>
         <Access>Public</Access>
-        <Location left="88" top="784" />
+        <Location left="88" top="812" />
         <Size width="163" height="129" />
         <Collapsed>False</Collapsed>
         <Value>NONE</Value>

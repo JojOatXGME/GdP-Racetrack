@@ -25,6 +25,15 @@ public interface TurnRule {
 	 * @param player The Player to be checked for
 	 * @return A array of points where the player can move to
 	 */
-	public Vec2D[] getAllowedTurns(Player player);
+	public Point[] getAllowedTurns(Player player);
+
+	/**
+	 * Gets all allowed turns which a player
+	 * with the given position and velocity can do.
+	 * @param position The players position
+	 * @param velocity The players velocity
+	 * @return A Array of Points where the player turn to
+	 */
+	public Point[] getAllowedTurns(Point position, Vec2D velocity);
 
 }
