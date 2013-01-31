@@ -24,7 +24,7 @@ public class Game {
 	private final Player[] players;
 	private final RuleSet rule;
 
-	private final List<EventListener> listeners = new ArrayList<>();
+	private final List<EventListener> listeners = new ArrayList<EventListener>();
 
 	private State state = State.PAUSED;
 	private Player winner = null;

@@ -189,7 +189,7 @@ public class MapGenerator {
 					{
 						if(y%16 == 0 && x%16 == 0)
 						{
-							switch(map.getPointType(new Point(x/16, y/16, map))){
+							switch(map.getPointType(new Point(x/16, y/16))){
 							case TRACK:
 								metaImage.setRGB(x, y, Map.COLOR_TRACK);
 								break;
