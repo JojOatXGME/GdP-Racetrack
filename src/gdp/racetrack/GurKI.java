@@ -1,5 +1,7 @@
 package gdp.racetrack;
 
+import gdp.racetrack.Turn.TurnType;
+
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
@@ -9,15 +11,19 @@ import java.util.Map.Entry;
 
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 
-public class GurKI {
+public class GurKI implements Runnable{
 	
 	private class Position extends Point {
-		Position(int x, int y, Map map) {
-			super(x, y, map);
+		Position(int x, int y) {
+			super(x, y);
 		}
 		
 		Position translocate(Velocity Velocity) {
-			return new Position(x + Velocity.x, y + Velocity.y, getMap());
+			return new Position(x + Velocity.x, y + Velocity.y);
+		}
+		
+		Velocity sub(Position position) {
+			return new Velocity(x - position.x, y-position.y);
 		}
 	}
 	
@@ -45,7 +51,6 @@ public class GurKI {
 		}
 	}
 	
-	public HashSet<Point> track;
 	public final HashMap<Point, Integer> goaldist = new HashMap<Point, Integer>();
 	public final Acceleration[] offsets = new Acceleration[] {
 		new Acceleration(-1, -1), new Acceleration(-1, 0),
@@ -98,19 +103,120 @@ public class GurKI {
 	//Version 2
 	
 	@SuppressWarnings("serial")
-	private class Configuration extends SimpleImmutableEntry<Position, Velocity> {
+	private static class Configuration extends SimpleImmutableEntry<Position, Velocity> {
 		
-		public Configuration(Position p, Velocity v) {
+		Configuration(Position p, Velocity v) {
 			super(p,v);
 			// TODO Auto-generated constructor stub
 		}
 		
+		Configuration turn(Acceleration a) {
+			return new Configuration(getKey().translocate(getValue()),getValue().accelerate(a));
+		}
+		
+		Configuration(Position p, Position p2) {
+			super(p,p2.sub(p));
+		}
 	}
 	
-	private HashMap<Configuration, HashMap<Acceleration, Integer>> utility=new HashMap<Configuration, HashMap<Acceleration, Integer>>();
+	private HashSet<Position> track=new HashSet<Position>();
+//	private HashMap<Configuration, HashSet<Acceleration>> turns=new HashMap<Configuration, HashSet<Acceleration>>();
 	
+	private Game game;
 	public GurKI(Game game) {
-		
+		this.game=game;
+		Vec2D mapsize=game.getMap().getSize();
+//		Velocity rest=new Velocity(0,0);
+		for(int x=0;x<mapsize.x;x++)
+			for(int y=0;y<mapsize.y;y++) {
+				Position position=new Position(x,y);
+				switch(game.getMap().getPointType(position)) {
+				case START:
+//					newturns.put(new Configuration(position,rest),new HashSet<Acceleration>());
+				case TRACK:
+					track.add(position);
+				default:
+				}
+			}
+		Thread analyzer=new Thread(this);
+		analyzer.setPriority(Thread.MIN_PRIORITY);
+		analyzer.start();
+	}
+
+//	private HashMap<Configuration, HashSet<Acceleration>> newturns=new HashMap<Configuration, HashSet<Acceleration>>();
+//	public void run() {
+//		// TODO Auto-generated method stub
+//		while(!newturns.isEmpty()) {
+//			HashMap<Configuration, HashSet<Acceleration>> newnewturns=new HashMap<Configuration, HashSet<Acceleration>>();
+//			for(Configuration config : newturns.keySet()) {
+//				HashSet<Acceleration> accelerations=newturns.get(config);
+//				for(Acceleration offset : offsets) {
+//					Configuration newconfig=config.turn(offset);
+//					if(!turns.containsKey(newconfig) && !newturns.containsKey(newconfig)) {
+//						accelerations.add(offset);
+//						newnewturns.put(newconfig, new HashSet<Acceleration>());
+//					}
+//				}
+//			}
+//			turns.putAll(newturns);
+//			newturns=newnewturns;
+//		}
+//	}
+	
+	HashMap<Configuration, Double> utility=new HashMap<Configuration, Double>();
+	HashMap<Configuration, HashSet<Configuration>> from=new HashMap<Configuration, HashSet<Configuration>>();
+	HashMap<Configuration, HashSet<Configuration>> to=  new HashMap<Configuration, HashSet<Configuration>>();
+	public void run() {
+		for(Position positionfrom : track)
+			for(Position positionto : track) {
+				TurnType turntype = game.getRule().getTurnResult(positionfrom, positionto).getturnType();
+				switch(turntype) {
+				case COLLISION_ENVIRONMENT:
+				case COLLISION_PLAYER:
+				case FORBIDDEN:
+					break;
+				case OK:
+				case FINISH:
+				case FINISH_LOOSE:
+				case FINISH_WIN:
+					Configuration fromconfig=new Configuration(positionfrom, positionto);
+					for(Acceleration offset : offsets) {						
+						Configuration newconfig=fromconfig.turn(offset);
+						addToGraph(newconfig, fromconfig, from);
+						addToGraph(fromconfig, newconfig, to);
+						switch (turntype) {
+						case OK:
+							utility.put(newconfig,1.0);
+							break;
+						default:
+							utility.put(newconfig,1000.0);
+							break;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		for(Configuration config:to.keySet())
+			if(game.getMap().getPointType(point))
+			for(Configuration fromconfig:from.get(config))
+		while(true) {
+			HashMap<Configuration, Double> newtility=new HashMap<Configuration, Double>();
+			for(Configuration config:utility.keySet())
+				for(Configuration fromconfig:from.get(config))
+					newtility
+		}
+	}
+
+	private void addToGraph(Configuration valueconfig, Configuration keyconfig,
+			HashMap<Configuration, HashSet<Configuration>> graph) {
+		HashSet<Configuration> set = graph.get(valueconfig);
+		if (set == null) {
+			set = new HashSet<Configuration>();
+			graph.put(valueconfig, set);
+		}
+		set.add(keyconfig);
 	}
 	
 	public class GurBot extends Player {
