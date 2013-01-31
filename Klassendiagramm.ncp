@@ -92,16 +92,17 @@
         <Name>RuleSet</Name>
         <Access>Public</Access>
         <Location left="88" top="967" />
-        <Size width="708" height="230" />
+        <Size width="708" height="247" />
         <Collapsed>False</Collapsed>
         <Member type="Field">private final EnvironmentCollisionRule environmentCollisionRule</Member>
         <Member type="Field">private final PlayerCollisionRule playerCollisionRule</Member>
         <Member type="Field">private final TurnRule turnRule</Member>
         <Member type="Field">private final VictoryRule victoryRule</Member>
         <Member type="Constructor">public RuleSet(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule rule)</Member>
-        <Member type="Method">public boolean isTurnAllowed(Player player, Vec2D position)</Member>
-        <Member type="Method">public Vec2D[] getAllowedTurns(Player player)</Member>
         <Member type="Method">public Player getWinner()</Member>
+        <Member type="Method">public boolean isTurnAllowed(Player player, Point destination)</Member>
+        <Member type="Method">public boolean isTurnAllowed(Point position, Vec2D velocity, Point destination)</Member>
+        <Member type="Method">public Turn[] getAllowedTurns(Player player)</Member>
         <Member type="Method">public Turn[] getAllowedTurns(Point position, Vec2D velocity)</Member>
         <Modifier>None</Modifier>
       </Entity>
