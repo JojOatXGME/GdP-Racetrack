@@ -16,13 +16,18 @@ public class Main {
 	private static void test() {
 		final Map map = new MapGenerator().generateMap((int) (Math.random()-0.5)*2*Integer.MAX_VALUE, new Vec2D(512,512), 3);
 		
-		PlayerCollisionRule playerCollisionRule = null;
-		EnvironmentCollisionRule envCollisionRule = null;
-		TurnRule turnRule = null;
-		VictoryRule victoryRule = null;
+		PlayerCollisionRule playerCollisionRule =
+				Lists.playerCollisionRule.createInstance(0);
+		EnvironmentCollisionRule envCollisionRule =
+				Lists.envCollisionRule.createInstance(0);
+		TurnRule turnRule =
+				Lists.turnRule.createInstance(0);
+		VictoryRule victoryRule =
+				Lists.victoryRule.createInstance(0);
+		
 		final RuleSet ruleSet = new RuleSet(envCollisionRule, playerCollisionRule, turnRule, victoryRule);
 
-		AI ai = AIList.createKI(AIList.getList().get(0));
+		AI ai = Lists.ai.createInstance(0);
 		final Player[] bots = new Player[3];
 		bots[0] = ai.createBot(Difficulty.EASY);
 		bots[1] = ai.createBot(Difficulty.NORMAL);
