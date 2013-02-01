@@ -1,5 +1,7 @@
 package gdp.racetrack;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -180,6 +182,43 @@ public class MapGenerator {
 			for(int i=0; i<maps.length; i++)
 			{
 				Map map = mapGen.generateMap(maps[i][3], new Vec2D(maps[i][0], maps[i][1]), maps[i][2]);
+				
+				Graphics turnTest = map.getImage().getGraphics();
+				
+				turnTest.setColor(new Color(Map.COLOR_BACKGROUND*3/2));
+				for(int x=0; x<maps[i][0]; x+=Map.GRIDSIZE)
+				{
+					turnTest.drawLine(x, 0, x, maps[i][1]);
+				}
+				for(int y=0; y<maps[i][0]; y+=Map.GRIDSIZE)
+				{
+					turnTest.drawLine(0, y, maps[i][0], y);
+				}
+				
+				int posX = maps[i][0]/4;
+				int posY = maps[i][1]/4;
+				Point start = new Point(posX/Map.GRIDSIZE, posY/Map.GRIDSIZE);
+				for(int j=0; j<360; j+=10)
+				{
+					Point end = new Point((int)(posX * Math.sin(Math.toRadians(j))/Map.GRIDSIZE+posX/Map.GRIDSIZE), (int)(posY * Math.cos(Math.toRadians(j))/Map.GRIDSIZE+posY/Map.GRIDSIZE));
+					Turn t = map.getTurnResult(start, end);
+					
+					switch(t.getTurnType()){
+					case COLLISION_ENVIRONMENT:
+						turnTest.setColor(new Color(0xFF0000));
+						turnTest.drawLine(posX, posY, t.getNewPosition().getX()*Map.GRIDSIZE, t.getNewPosition().getY()*Map.GRIDSIZE);
+						break;
+					case FINISH:
+						turnTest.setColor(new Color(Map.COLOR_FINISH));
+						turnTest.drawLine(posX, posY, end.getX()*Map.GRIDSIZE, end.getY()*Map.GRIDSIZE);
+						break;
+					case OK:
+						turnTest.setColor(new Color(0x0000FF));
+						turnTest.drawLine(posX, posY, end.getX()*Map.GRIDSIZE, end.getY()*Map.GRIDSIZE);
+						break;
+					}
+				}
+				
 				ImageIO.write((RenderedImage) map.getImage(), "png", new File("map" + maps[i][3] + ".png"));
 				
 				BufferedImage metaImage = new BufferedImage(map.getSize().x, map.getSize().y, BufferedImage.TYPE_INT_RGB);
