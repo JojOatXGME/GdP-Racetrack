@@ -110,7 +110,9 @@ public class ClassList {
 				descBuilder.append(line);
 			}
 		}
-			
+		
+		reader.close();
+		
 		return list;
 	}
 
