@@ -58,7 +58,7 @@ public class Map {
 	 * @return The size of the map
 	 */
 	public Vec2D getSize() {
-		return new Vec2D(mapImage.getWidth(null), mapImage.getHeight(null));
+		return new Vec2D(mapImage.getWidth(null)/GRIDSIZE, mapImage.getHeight(null)/GRIDSIZE);
 	}
 
 	/**
