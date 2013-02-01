@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.sun.xml.internal.txw2.IllegalSignatureException;
+
 public class Game {
 
 	public enum State {
@@ -55,6 +57,33 @@ public class Game {
 			for (Player p : players) {
 				this.players.add(p);
 			}
+		}
+	}
+
+	/**
+	 * Adds a player to the game.
+	 * If the game have already started the method will throw a {@link IllegalStateException}.
+	 * @param player The Player to add to the game
+	 */
+	public void addPlayer(final Player player) {
+		if (state != State.PREPARING)
+			throw new IllegalSignatureException("The game must have never run to change the list of players");
+		
+		players.add(player);
+	}
+
+	/**
+	 * Adds some player to the game.
+	 * The method will get the players from the given AI instance.
+	 * If the AI don't support difficulty, submit null as difficulty.
+	 * The game will create as many players as difficulty passed.
+	 * If the game have already started the method will throw a {@link IllegalStateException}.
+	 * @param ai The AI to create the player.
+	 * @param difficulties The difficulties of the players.
+	 */
+	public void addPlayer(final AI ai, final Difficulty... difficulties) {
+		for (Difficulty dif : difficulties) {
+			addPlayer(ai.createBot(dif));
 		}
 	}
 
