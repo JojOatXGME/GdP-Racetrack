@@ -11,7 +11,7 @@ public class Turn {
 		COLLISION_PLAYER,
 		COLLISION_ENVIRONMENT,
 	}
-	
+
 	public Turn(Point newPosition, Vec2D newVelocity, TurnType turnType, Player affectedPlayer, PlayerInfo affectedPlayerInfo) {
 		this.newPosition = newPosition;
 		this.newVelocity = newVelocity;
@@ -20,32 +20,83 @@ public class Turn {
 		this.affectedPlayer = affectedPlayer;
 		this.affectedPlayerInfo = affectedPlayerInfo;
 	}
-	
-	public Point getNewPosition () {
-		return  newPosition;
+
+	public Turn(TurnType turnType){
+		this.turnType = turnType;
 	}
 	
-	public Vec2D getNewVelocity () {
+	public Turn(Point newPosition, TurnType turnType){
+		this.newPosition = newPosition;
+		this.turnType = turnType;
+	}
+	
+	
+	/**
+	 * @return the newPosition
+	 */
+	public Point getNewPosition() {
+		return newPosition;
+	}
+	/**
+	 * @param newPosition the newPosition to set
+	 */
+	public void setNewPosition(Point newPosition) {
+		this.newPosition = newPosition;
+	}
+	/**
+	 * @return the newVelocity
+	 */
+	public Vec2D getNewVelocity() {
 		return newVelocity;
 	}
-	
-	public TurnType getTurnType () {
+	/**
+	 * @param newVelocity the newVelocity to set
+	 */
+	public void setNewVelocity(Vec2D newVelocity) {
+		this.newVelocity = newVelocity;
+	}
+	/**
+	 * @return the turnType
+	 */
+	public TurnType getTurnType() {
 		return turnType;
 	}
-
+	/**
+	 * @param turnType the turnType to set
+	 */
+	public void setTurnType(TurnType turnType) {
+		this.turnType = turnType;
+	}
+	/**
+	 * @return the affectedPlayer
+	 */
 	public Player getAffectedPlayer() {
 		return affectedPlayer;
 	}
-
+	/**
+	 * @param affectedPlayer the affectedPlayer to set
+	 */
+	public void setAffectedPlayer(Player affectedPlayer) {
+		this.affectedPlayer = affectedPlayer;
+	}
+	/**
+	 * @return the affectedPlayerInfo
+	 */
 	public PlayerInfo getAffectedPlayerInfo() {
 		return affectedPlayerInfo;
 	}
-	
-	private final Point newPosition;
-	private final Vec2D newVelocity;
-	private final TurnType turnType;
+	/**
+	 * @param affectedPlayerInfo the affectedPlayerInfo to set
+	 */
+	public void setAffectedPlayerInfo(PlayerInfo affectedPlayerInfo) {
+		this.affectedPlayerInfo = affectedPlayerInfo;
+	}
 
-	private final Player affectedPlayer;
-	private final PlayerInfo affectedPlayerInfo;
+	private Point newPosition = null;
+	private Vec2D newVelocity = null;
+	private TurnType turnType = null;
+
+	private Player affectedPlayer = null;
+	private PlayerInfo affectedPlayerInfo = null;
 
 }
