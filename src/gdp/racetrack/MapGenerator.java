@@ -20,7 +20,22 @@ public class MapGenerator {
 	 * @param seed The seed to be used for generating the map
 	 * @return The new generated map
 	 */
-	public Map generateMap(int seed, Vec2D size, int numberPlayers) {
+	public Map generateMap(int seed, int numberPlayers, Difficulty difficulty) {
+		Vec2D size = new Vec2D(numberPlayers*8*Map.GRIDSIZE/difficultyToInt(difficulty), numberPlayers*8*Map.GRIDSIZE*2/3);
+		
+		for(int i=8; i<32; i++){
+			if(size.x <= 1<<i){
+				size = new Vec2D(1<<i, size.y);
+				break;
+			}
+		}
+		for(int i=8; i<32; i++){
+			if(size.x <= 1<<i){
+				size = new Vec2D(size.x, 1<<i);
+				break;
+			}
+		}
+		
 		BufferedImage mapImage = new BufferedImage(size.x, size.y, BufferedImage.TYPE_INT_RGB);
 		
 		for(int x=0; x<size.x; x++){
@@ -52,9 +67,9 @@ public class MapGenerator {
 				absPoints[i][j] = new Vec2D(relPoints[i][j].x + (i%2)*size.x/2 + (j%2)*size.x/4, relPoints[i][j].y + (i/2)*size.y/2 + (j/2)*size.y/4);
 			}
 		}
-		absPoints[0][0] = new Vec2D(absPoints[0][0].x - absPoints[0][0].x%16, absPoints[0][0].y - absPoints[0][0].y%16);
+		absPoints[0][0] = new Vec2D(absPoints[0][0].x - absPoints[0][0].x%Map.GRIDSIZE, absPoints[0][0].y - absPoints[0][0].y%Map.GRIDSIZE);
 		absPoints[0][2] = new Vec2D(absPoints[0][0].x, absPoints[0][0].y+(numberPlayers+2)*16);
-		
+	
 		
 		Vec2D startPoints[] = new Vec2D[16];
 		Vec2D endPoints[] = new Vec2D[16];
@@ -87,13 +102,13 @@ public class MapGenerator {
 			else if(i==10)
 				drawLine(startPoints[i], endPoints[i], mapImage, seed+i*2, Map.COLOR_FINISH, 0);
 			else
-				drawLine(startPoints[i], endPoints[i], mapImage, seed+i*2, 0x000000, Math.min(mapImage.getHeight(), mapImage.getWidth())/32);
+				drawLine(startPoints[i], endPoints[i], mapImage, seed+i*2, 0x000000, Math.min(size.x, size.y)/32);
 				
 		}
 		fillImage(mapImage, (absPoints[0][0].x + absPoints[0][3].x)/2, (absPoints[0][0].y + absPoints[0][3].y)/2);
 		
 		AffineTransform at = AffineTransform.getTranslateInstance(0,0);  
-        at.rotate(Math.toRadians(90)*(seed%4), mapImage.getWidth()/2, mapImage.getHeight()/2);  
+        at.rotate(Math.toRadians(90)*(seed%4), size.x/2, size.y/2);  
         AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
         mapImage = op.filter(mapImage, null);
                 
@@ -124,7 +139,9 @@ public class MapGenerator {
 			{
 				for(int dy = -1; dy<=1; dy++)
 				{
-					image.setRGB(x+dx, y+dy, color);			
+					int posX = Math.min(Math.max(x+dx, 0), image.getWidth());
+					int posY = Math.min(Math.max(y+dy, 0), image.getHeight());
+					image.setRGB(posX, posY, color);			
 				}
 			}
 		}
@@ -167,36 +184,63 @@ public class MapGenerator {
 		}
 	}
 	
+	private static int difficultyToInt(Difficulty difficulty)
+	{
+		switch(difficulty){
+		case EASY:
+			return 1;
+		case NORMAL:
+			return 2;
+		case HARD:
+			return 3;
+		default:
+			return 1;
+		}
+	}
+	
 	public static void main(String args[])
 	{
 		MapGenerator mapGen = new MapGenerator();
-		int maps[][] = new int[16][4];
+		int maps[][] = new int[16*3][2];
+		Difficulty difficulty[] = new Difficulty[maps.length];
 		for(int i=0; i<maps.length; i++)
 		{
-			maps[i][0] = 512;
-			maps[i][1] = 512;
-			maps[i][2] = 3;
-			maps[i][3] = i;
+			maps[i][0] = i/3+1; // numberPlayers
+			maps[i][1] = i/3; // seed
+			switch(i%3){
+			case 0:
+				difficulty[i] = Difficulty.EASY;
+				break;
+			case 1:
+				difficulty[i] = Difficulty.NORMAL;
+				break;
+			case 2:
+				difficulty[i] = Difficulty.HARD;
+				break;
+			}
+			
 		}
 		try {
 			for(int i=0; i<maps.length; i++)
 			{
-				Map map = mapGen.generateMap(maps[i][3], new Vec2D(maps[i][0], maps[i][1]), maps[i][2]);
+				Map map = mapGen.generateMap(maps[i][1], maps[i][0], difficulty[i]);
+				int sizeX = map.getSize().x*Map.GRIDSIZE;
+				int sizeY = map.getSize().y*Map.GRIDSIZE;
 				
 				Graphics turnTest = map.getImage().getGraphics();
 				
 				turnTest.setColor(new Color(Map.COLOR_BACKGROUND*3/2));
-				for(int x=0; x<maps[i][0]; x+=Map.GRIDSIZE)
+				for(int x=0; x<sizeX; x+=Map.GRIDSIZE)
 				{
-					turnTest.drawLine(x, 0, x, maps[i][1]);
+					turnTest.drawLine(x, 0, x, sizeY);
 				}
-				for(int y=0; y<maps[i][0]; y+=Map.GRIDSIZE)
+				for(int y=0; y<sizeX; y+=Map.GRIDSIZE)
 				{
-					turnTest.drawLine(0, y, maps[i][0], y);
+					turnTest.drawLine(0, y, sizeX, y);
 				}
 				
-				int posX = maps[i][0]/4;
-				int posY = maps[i][1]/4;
+				int posX = sizeX/4;
+				int posY = sizeY/4;
 				Point start = new Point(posX/Map.GRIDSIZE, posY/Map.GRIDSIZE);
 				for(int j=0; j<360; j+=10)
 				{
@@ -219,12 +263,12 @@ public class MapGenerator {
 					}
 				}
 				
-				ImageIO.write((RenderedImage) map.getImage(), "png", new File("map" + maps[i][3] + ".png"));
+				ImageIO.write((RenderedImage) map.getImage(), "png", new File("map_" + maps[i][1] + "_" + maps[i][0] + "_" + difficultyToInt(difficulty[i]) + ".png"));
 				
-				BufferedImage metaImage = new BufferedImage(map.getSize().x, map.getSize().y, BufferedImage.TYPE_INT_RGB);
-				for(int x=0; x<map.getSize().x; x++)
+				BufferedImage metaImage = new BufferedImage(map.getSize().x*Map.GRIDSIZE, map.getSize().y*Map.GRIDSIZE, BufferedImage.TYPE_INT_RGB);
+				for(int x=0; x<sizeX; x++)
 				{
-					for(int y=0; y<map.getSize().y; y++)
+					for(int y=0; y<sizeY; y++)
 					{
 						if(y%16 == 0 && x%16 == 0)
 						{
@@ -247,7 +291,7 @@ public class MapGenerator {
 						}
 					}
 				}
-				ImageIO.write((RenderedImage) metaImage, "png", new File("map" + maps[i][3] + "meta.png"));
+				ImageIO.write((RenderedImage) metaImage, "png", new File("map_" + maps[i][1] + "_" + maps[i][0] + "_" + difficultyToInt(difficulty[i]) + "meta.png"));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -14,7 +14,7 @@ public class Main {
 	}
 
 	private static void test() {
-		final Map map = new MapGenerator().generateMap((int) (Math.random()-0.5)*2*Integer.MAX_VALUE, new Vec2D(512,512), 3);
+		final Map map = new MapGenerator().generateMap((int) (Math.random()-0.5)*2*Integer.MAX_VALUE, 3, Difficulty.NORMAL);
 		
 		PlayerCollisionRule playerCollisionRule =
 				Lists.playerCollisionRule.createInstance(0);
