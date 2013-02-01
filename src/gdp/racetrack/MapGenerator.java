@@ -107,6 +107,22 @@ public class MapGenerator {
 		}
 		fillImage(mapImage, (absPoints[0][0].x + absPoints[0][3].x)/2, (absPoints[0][0].y + absPoints[0][3].y)/2);
 		
+		PerlinNoise noise = new PerlinNoise(1, 1, 1, seed);
+		double pos[] = new double[1];
+		pos[0] = 0;
+		for(int i=0; i<numberPlayers*(1.0+difficultyToInt(difficulty)/2.0)/2; i++){
+			int x, y;
+			do{
+				pos[0] += 1; double tmpX = noise.getPerlinNoise(pos);
+				pos[0] += 1; double tmpY = noise.getPerlinNoise(pos);
+				x = (int)((tmpX + 1)*size.x/2);
+				y = (int)((tmpY + 1)*size.y/2);
+			}while((mapImage.getRGB(x, y)&0xFFFFFF) != Map.COLOR_TRACK);
+			pos[0] += 1; int radius = (int)((noise.getPerlinNoise(pos) + 2) * Math.min(size.x, size.y)/64);
+			drawPoint(x, y, radius, mapImage, seed+i*2);
+		}
+		
+		
 		AffineTransform at = AffineTransform.getTranslateInstance(0,0);  
         at.rotate(Math.toRadians(90)*(seed%4), size.x/2, size.y/2);  
         AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
@@ -115,13 +131,13 @@ public class MapGenerator {
 		Map map = new Map(mapImage);
 		return map;
 	}
-	
+
 	private void drawLine(Vec2D p1, Vec2D p2, BufferedImage image, int seed, int color, int scattering)
 	{
 		int max = Math.max(image.getHeight(), image.getWidth());
 		
-		PerlinNoise noiseX = new PerlinNoise(1, 0.5, 9, seed);		
-		PerlinNoise noiseY = new PerlinNoise(1, 0.5, 9, seed+1);
+		PerlinNoise noiseX = new PerlinNoise(1, 0.5, 8, seed);		
+		PerlinNoise noiseY = new PerlinNoise(1, 0.5, 8, seed+1);
 		double pos[] = new double[1];
 		pos[0] = 0;
 		int startX = (int) (noiseX.getPerlinNoise(pos)*scattering);
@@ -139,13 +155,45 @@ public class MapGenerator {
 			{
 				for(int dy = -1; dy<=1; dy++)
 				{
-					int posX = Math.min(Math.max(x+dx, 0), image.getWidth());
-					int posY = Math.min(Math.max(y+dy, 0), image.getHeight());
+					int posX = Math.min(Math.max(x+dx, 0), image.getWidth()-1);
+					int posY = Math.min(Math.max(y+dy, 0), image.getHeight()-1);
 					image.setRGB(posX, posY, color);			
 				}
 			}
 		}
 		
+	}
+	
+	private void drawPoint(int centerX, int centerY, int radius, BufferedImage image, int seed) {
+		
+		int max = Math.max(image.getHeight(), image.getWidth());
+		double scattering = radius*2;
+		
+		PerlinNoise noiseX = new PerlinNoise(1, 0.5, 8, seed);		
+		PerlinNoise noiseY = new PerlinNoise(1, 0.5, 8, seed+1);
+		double pos[] = new double[1];
+		pos[0] = 0;
+		int startX = (int) (noiseX.getPerlinNoise(pos)*scattering);
+		int startY = (int) (noiseY.getPerlinNoise(pos)*scattering);
+		pos[0] = 8/Math.PI;
+		int endX = (int) (noiseX.getPerlinNoise(pos)*scattering);
+		int endY = (int) (noiseY.getPerlinNoise(pos)*scattering);
+		
+		for(int i=0; i<=max; i++)
+		{
+			pos[0] = i*8/Math.PI/max;
+			int x = (int) (Math.sin(Math.PI*2*i/max)*radius + noiseX.getPerlinNoise(pos)*scattering + centerX - startX - (endX - startX)*i/max);
+			int y = (int) (Math.cos(Math.PI*2*i/max)*radius + noiseY.getPerlinNoise(pos)*scattering + centerY - startY - (endY - startY)*i/max);
+			for(int dx = -1; dx<=1; dx++)
+			{
+				for(int dy = -1; dy<=1; dy++)
+				{
+					int posX = Math.min(Math.max(x+dx, 0), image.getWidth()-1);
+					int posY = Math.min(Math.max(y+dy, 0), image.getHeight()-1);
+					image.setRGB(posX, posY, 0x000000);			
+				}
+			}
+		}	
 	}
 	
 	private void fillImage(BufferedImage image, int x, int y)
