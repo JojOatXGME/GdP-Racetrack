@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -248,6 +249,12 @@ public class GurKI implements Runnable {
 					return config.getKey().translocate(config.getValue());
 			assert 1==0;
 			return null;
+		}
+
+		@Override
+		protected Point chooseStart(List<Point> possiblePositions) {
+			// TODO simple method stub to just work
+			return possiblePositions.get(0);
 		}
 
 //		@Override
