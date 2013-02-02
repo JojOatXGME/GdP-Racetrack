@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class GurKI implements Runnable {
+public class GurKI implements AI,Runnable {
 
 	private class Position extends Point {
 		Position(int x, int y) {
@@ -263,4 +263,17 @@ public class GurKI implements Runnable {
 //					.random() * 8)]));
 //		}
 	}
+
+	@Override
+	public boolean isDifficultySupported() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Player createBot(Difficulty difficulty) {
+		// TODO Auto-generated method stub
+		return new GurBot();
+	}
+
 }
