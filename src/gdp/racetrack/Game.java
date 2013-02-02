@@ -181,6 +181,9 @@ public class Game {
 			}
 			
 			List<Point> startPoints = new ArrayList<Point>(); // TODO: get possible start positions
+			for (Point startPoint : map.getStartPoints()) {
+				startPoints.add(startPoint);
+			}
 			List<Point> unmodifiable = Collections.unmodifiableList(startPoints);
 			for (Player player : players) {
 				Point selected = player.chooseStart(unmodifiable);
