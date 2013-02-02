@@ -65,7 +65,7 @@ public class Game {
 	 * If the game have already started the method will throw a {@link IllegalStateException}.
 	 * @param player The Player to add to the game
 	 */
-	public void addPlayer(final Player player) {
+	public void addPlayer(final Player player) throws IllegalStateException {
 		if (state != State.PREPARING)
 			throw new IllegalSignatureException("The game must have never run to change the list of players");
 		
@@ -81,7 +81,7 @@ public class Game {
 	 * @param ai The AI to create the player.
 	 * @param difficulties The difficulties of the players.
 	 */
-	public void addPlayer(final AI ai, final Difficulty... difficulties) {
+	public void addPlayer(final AI ai, final Difficulty... difficulties) throws IllegalStateException {
 		for (Difficulty dif : difficulties) {
 			addPlayer(ai.createBot(dif));
 		}
@@ -109,7 +109,7 @@ public class Game {
 	 * it while the game is preparing.
 	 * @return The players which play this game
 	 */
-	public List<Player> getPlayers() {
+	public List<Player> getPlayers() throws IllegalStateException {
 		if (state == State.PREPARING)
 			throw new IllegalStateException("The game must be ready to get informations like that");
 		
@@ -145,7 +145,7 @@ public class Game {
 	 * It will end the run-Method in the next time.
 	 * @throws IllegalStateException if the game have already finished or has never run
 	 */
-	public void pause() {
+	public void pause() throws IllegalStateException {
 		synchronized(this) {
 			if (state == State.FINISHED)
 				throw new IllegalStateException("Can not pause the game when it is finished");
@@ -153,6 +153,8 @@ public class Game {
 				throw new IllegalStateException("Can not pause the game when it was never started");
 			
 			state = State.PAUSED;
+			
+			Log.logger.fine("Game was paused");
 		}
 	}
 
@@ -164,7 +166,7 @@ public class Game {
 	 * it will throw a {@link IllegalStateException}.
 	 * @throws IllegalStateException if the game is already running or finished
 	 */
-	public void run() {
+	public void run() throws IllegalStateException {
 		if (state == State.RUNNING)
 			throw new IllegalStateException("The game is already running");
 		if (state == State.FINISHED)
@@ -175,17 +177,22 @@ public class Game {
 		
 		if (firstRun) {
 			// initial player
+			Log.logger.fine("The Game does run the first time. Preparing ...");
+			Log.logger.fine("initial all players");
 			int i = 1;
 			for (Player p : players) {
+				Log.logger.finest("initial player " + i);
 				p.init(this, i++);
 			}
 			
-			List<Point> startPoints = new ArrayList<Point>(); // TODO: get possible start positions
+			Log.logger.fine("Lets the player choose there start positions");
+			List<Point> startPoints = new ArrayList<Point>();
 			for (Point startPoint : map.getStartPoints()) {
 				startPoints.add(startPoint);
 			}
 			List<Point> unmodifiable = Collections.unmodifiableList(startPoints);
 			for (Player player : players) {
+				Log.logger.finer("Lets "+player+" choose the start position");
 				Point selected = player.chooseStart(unmodifiable);
 				if (!startPoints.contains(selected))
 					throw new IllegalTurnException(player+" has selected an illigal start position");
@@ -195,12 +202,14 @@ public class Game {
 				
 				startPoints.remove(selected);
 			}
+			Log.logger.fine("Finished preparing");
 		}
 		
 		onGameStart(firstRun);
 		
 		while (state == State.RUNNING) {
 			for (Player player : players) {
+				Log.logger.fine("handle turn of "+player);
 				final Vec2D velocity = player.getVelocity();
 				final Point start = player.getPosition();
 				final Point destination = player.turn();
@@ -247,36 +256,46 @@ public class Game {
 			throw new IllegalArgumentException("EventListener can not be null");
 		
 		if (!listeners.contains(listener)) {
+			Log.logger.info("A new listener was added ("+listener+")");
 			listeners.add(listener);
 		}
 	}
 
 	private void onGameStart(boolean firstTime) {
+		Log.logger.fine("onGameStart event was called");
 		for (EventListener l : listeners) {
+			Log.logger.finer("call "+l);
 			l.onGameStart(firstTime);
 		}
 	}
 
 	private void onGamePause() {
+		Log.logger.fine("onGamePause event was called");
 		for (EventListener l : listeners) {
+			Log.logger.finer("call "+l);
 			l.onGamePause();
 		}
 	}
 
 	private void onGameFinished() {
+		Log.logger.fine("onGameFinished event was called");
 		for (EventListener l : listeners) {
+			Log.logger.finer("call "+l);
 			l.onGameFinished();
 		}
 	}
 
 	private void onPlayerChooseStart(Player player) {
+		Log.logger.fine("onPlayerChooseStart event was called");
 		for (EventListener l : listeners) {
+			Log.logger.finer("call "+l);
 			l.onPlayerChooseStart(player);
 		}
 	}
 
 	private void onPlayerTurn(Player player, Point startPoint,Point endPoint, Point destinationPoint) {
 		for (EventListener l : listeners) {
+			Log.logger.finer("call "+l);
 			l.onPlayerTurn(player, startPoint, endPoint, destinationPoint);
 		}
 	}

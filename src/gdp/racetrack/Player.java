@@ -6,18 +6,22 @@ import java.util.List;
 
 public abstract class Player {
 	private Game game = null;
-	private int playerNumber;
+	private int playerNumber = -1;
 
 	// --- --- Initialization part --- ---
 
 	final void init(Game game, int playerNumber) {
-		if (game != null)
+		if (this.game != null)
 			throw new IllegalStateException("The player is already initialized");
 		
 		this.game = game;
 		this.playerNumber = playerNumber;
 		
+		Log.logger.fine("Initialization of " + this + " has finished, run onLoad event");
+		
 		onLoad();
+		
+		Log.logger.fine("onLoad event finished");
 	}
 
 	// --- --- Methods to override --- ---
