@@ -12,6 +12,7 @@ public class Map {
 	public Map(BufferedImage image) {
 		mapImage = image;
 		mapData = new PointType[image.getWidth()][image.getHeight()];
+		Point newStartPoints[] = new Point[0];
 		for(int x=0; x<image.getWidth(); x++){
 			for(int y=0; y<image.getHeight(); y++){
 				switch(image.getRGB(x,y)&0xFFFFFF){
@@ -20,6 +21,13 @@ public class Map {
 						break;
 					case COLOR_START:
 						mapData[x][y] = PointType.START;
+						if(x%GRIDSIZE==0 && y%GRIDSIZE==0){
+							Point tmpStartPoints[] = new Point[newStartPoints.length+1];
+							for(int i=0; i<newStartPoints.length; i++)
+								tmpStartPoints[i] = newStartPoints[i];
+							tmpStartPoints[newStartPoints.length] = new Point(x, y);
+							newStartPoints = tmpStartPoints;
+						}
 						break;
 					case COLOR_FINISH:
 						mapData[x][y] = PointType.FINISH;
@@ -29,6 +37,7 @@ public class Map {
 				}				
 			}
 		}
+		startPoints = newStartPoints;
 	}
 
 	/**
@@ -70,6 +79,10 @@ public class Map {
 	 */
 	public Image getImage() {
 		return mapImage;
+	}
+	
+	public Point[] getStartPoints(){
+		return startPoints;
 	}
 	
 	public Turn getTurnResult(Point start, Point end) {
@@ -160,6 +173,7 @@ public class Map {
 
 
 	private final PointType mapData[][];
+	private final Point startPoints[];
  	private final Image mapImage;
  	public static final int COLOR_TRACK  = 0xFFFFFF;
  	public static final int COLOR_START  = 0xFF0000;
