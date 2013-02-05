@@ -154,6 +154,17 @@ public abstract class Player {
 		onUpdateVelocity(oldVelocity, velocity);
 	}
 
+	/**
+	 * Gets a PlayerInfo which contains the informations of the player.
+	 * Changes at the object will not have any affect on the player.
+	 * lastPosition and newPosition will have the same value by default.
+	 * @return The PlayerInfo of this player
+	 */
+	public final PlayerInfo getPlayerInfo() {
+		PlayerInfo info = new PlayerInfo(position, position, velocity);
+		return info;
+	}
+
 	@Override
 	public String toString() {
 		return "Player "+playerNumber+" ("+getClass().getSimpleName()+")";
