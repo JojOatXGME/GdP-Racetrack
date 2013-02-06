@@ -2,6 +2,8 @@ package gdp.racetrack;
 
 public interface TurnRule {
 
+	public void init(Game game);
+
 	/**
 	 * Check whether the given turn would be allowed or not.
 	 * @param player The player which would do the turn

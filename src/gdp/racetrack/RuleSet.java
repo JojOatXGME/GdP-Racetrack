@@ -1,5 +1,8 @@
 package gdp.racetrack;
 
+/**
+ * A set of the different parts of rules.
+ */
 public class RuleSet {
 
 	private final EnvironmentCollisionRule envCollisionRule;
@@ -7,6 +10,13 @@ public class RuleSet {
 	private final TurnRule turnRule;
 	private final VictoryRule victoryRule;
 
+	/**
+	 * Creates a new RuleSet with the given Rules.
+	 * @param envCollisionRule
+	 * @param playerCollisionRule
+	 * @param turnRule
+	 * @param victoryRule
+	 */
 	public RuleSet(EnvironmentCollisionRule envCollisionRule, PlayerCollisionRule playerCollisionRule, TurnRule turnRule, VictoryRule victoryRule) {
 		this.envCollisionRule = envCollisionRule;
 		this.playerCollisionRule = playerCollisionRule;
@@ -60,6 +70,18 @@ public class RuleSet {
 	 */
 	public Player getWinner() {
 		throw new UnsupportedOperationException("The method is not implemented yet.");
+	}
+
+	private boolean isInit = false;
+	public void initRules(final Game game) {
+		if (isInit)
+			throw new IllegalStateException("The rules of this set was already initialized.");
+		
+		isInit = true;
+		envCollisionRule.init(game);
+		playerCollisionRule.init(game);
+		turnRule.init(game);
+		victoryRule.init(game);
 	}
 
 }
