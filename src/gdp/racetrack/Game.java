@@ -202,6 +202,8 @@ public class Game {
 				
 				startPoints.remove(selected);
 			}
+			Log.logger.fine("Initial Rules");
+			rule.initRules(this);
 			Log.logger.fine("Finished preparing");
 		}
 		

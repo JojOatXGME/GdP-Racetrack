@@ -78,9 +78,14 @@ public class RuleSet {
 			throw new IllegalStateException("The rules of this set was already initialized.");
 		
 		isInit = true;
+		
+		Log.logger.finer("Initial evironment collision rule");
 		envCollisionRule.init(game);
+		Log.logger.finer("Initial player collision rule");
 		playerCollisionRule.init(game);
+		Log.logger.finer("Initial turn rule");
 		turnRule.init(game);
+		Log.logger.finer("Initial victory rule");
 		victoryRule.init(game);
 	}
 
