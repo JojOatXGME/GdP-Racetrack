@@ -89,7 +89,7 @@ public abstract class Player {
 
 	private Point position = null;
 	private Vec2D velocity = null;
-	private boolean validPath = true;
+	private boolean pathValid = true;
 
 	public Player() {
 		turnHistoryUnmodifiable = Collections.unmodifiableList(turnHistory);
@@ -128,6 +128,15 @@ public abstract class Player {
 	}
 
 	/**
+	 * Returns whether the current path state is valid or not.
+	 * It means if you reach the target but you path is not valid you do not win.
+	 * @return true if the path is valid, false otherwise
+	 */
+	public final boolean isPathValid() {
+		return pathValid;
+	}
+
+	/**
 	 * Sets the position of this player.
 	 * <br>
 	 * This will also set a new velocity after the other changes was made.
@@ -156,13 +165,21 @@ public abstract class Player {
 	}
 
 	/**
+	 * Sets whether the path is valid or not.
+	 * @param pathValid whether the path is valid or not.
+	 */
+	public final void setPathValid(boolean pathValid) {
+		this.pathValid = pathValid;
+	}
+
+	/**
 	 * Gets a PlayerInfo which contains the informations of the player.
 	 * Changes at the object will not have any affect on the player.
 	 * lastPosition and newPosition will have the same value by default.
 	 * @return The PlayerInfo of this player
 	 */
 	public final PlayerInfo getPlayerInfo() {
-		PlayerInfo info = new PlayerInfo(position, position, velocity);
+		PlayerInfo info = new PlayerInfo(position, position, velocity, pathValid);
 		return info;
 	}
 
