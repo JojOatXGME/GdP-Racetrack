@@ -212,6 +212,7 @@ public class Game {
 				Log.logger.fine("handle turn of "+player);
 				final Vec2D velocity = player.getVelocity();
 				final Point start = player.getPosition();
+				final boolean isPathValid = player.isPathValid();
 				final Point destination = player.turn();
 				final Turn turn = rule.getTurnResult(player, destination);
 				
@@ -221,12 +222,16 @@ public class Game {
 					throw new IllegalTurnException(player+" had manipulate his position");
 				if (player.getVelocity() != velocity)
 					throw new IllegalTurnException(player+" had manipulate his velocity");
+				if (player.isPathValid() != isPathValid)
+					throw new IllegalTurnException(player+" had manipulate his path valid state");
 				
 				player.setPosition(turn.getNewPosition());
 				player.setVelocity(turn.getNewVelocity());
+				// TODO player.setVelocity(turn.);
 				if (turn.getAffectedPlayer() != null) {
 					turn.getAffectedPlayer().setPosition(turn.getAffectedPlayerInfo().getNewPos());
 					turn.getAffectedPlayer().setVelocity(turn.getAffectedPlayerInfo().getVelocity());
+					turn.getAffectedPlayer().setPathValid(turn.getAffectedPlayerInfo().isPathValid());
 				}
 				
 				onPlayerTurn(player, start, player.getPosition(), destination);
