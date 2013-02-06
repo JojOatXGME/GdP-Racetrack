@@ -84,8 +84,8 @@ public abstract class Player {
 
 	// --- --- Player logic --- ---
 
-	private final LinkedList<Point> turnHistory = new LinkedList<Point>();
-	private final List<Point> turnHistoryUnmodifiable;
+	private final LinkedList<IrrevocableTurn> turnHistory = new LinkedList<IrrevocableTurn>();
+	private final List<IrrevocableTurn> turnHistoryUnmodifiable;
 
 	private Point position = null;
 	private Vec2D velocity = null;
@@ -120,56 +120,12 @@ public abstract class Player {
 	}
 
 	/**
-	 * Gets a history of positions of the player.
-	 * @return History of positions
-	 */
-	public final List<Point> getTurnHistory() {
-		return turnHistoryUnmodifiable;
-	}
-
-	/**
 	 * Returns whether the current path state is valid or not.
 	 * It means if you reach the target but you path is not valid you do not win.
 	 * @return true if the path is valid, false otherwise
 	 */
 	public final boolean isPathValid() {
 		return pathValid;
-	}
-
-	/**
-	 * Sets the position of this player.
-	 * <br>
-	 * This will also set a new velocity after the other changes was made.
-	 * @param position The new position of the player
-	 */
-	public final void setPosition(Point position) {
-		Point oldPos = this.position;
-		// update position
-		this.position = position;
-		// add entry in turn history
-		turnHistory.offerFirst(position);
-		// event to handle changes
-		onUpdatePosition(oldPos, position);
-	}
-
-	/**
-	 * Sets the velocity of this player.
-	 * @param velocity The new velocity of the player
-	 */
-	public final void setVelocity(Vec2D velocity) {
-		Vec2D oldVelocity = this.velocity;
-		// update velocity
-		this.velocity = velocity;
-		// event to handle changes
-		onUpdateVelocity(oldVelocity, velocity);
-	}
-
-	/**
-	 * Sets whether the path is valid or not.
-	 * @param pathValid whether the path is valid or not.
-	 */
-	public final void setPathValid(boolean pathValid) {
-		this.pathValid = pathValid;
 	}
 
 	/**
@@ -183,9 +139,78 @@ public abstract class Player {
 		return info;
 	}
 
+	public final IrrevocableTurn getLastTurn() {
+		return turnHistory.getFirst();
+	}
+
+	/**
+	 * Gets a history of positions of the player.
+	 * @return History of positions
+	 */
+	public final List<IrrevocableTurn> getTurnHistory() {
+		return turnHistoryUnmodifiable;
+	}
+
 	@Override
 	public String toString() {
 		return "Player "+playerNumber+" ("+getClass().getSimpleName()+")";
+	}
+
+	/**
+	 * Does the changes of the given turn.
+	 * @param turn The Turn which was made
+	 */
+	public void makeTurn(IrrevocableTurn turn) {
+		if (turn.getStartPosition() != this.position)
+			throw new IllegalArgumentException("The given turn must represent a turn of "+this);
+		
+		setPosition(turn.getEndPosition());
+		setVelocity(turn.getVelocity());
+		
+		if (turn.changedPathValidState()) {
+			setPathValid(turn.wasPathValid());
+		}
+		
+		if (turn.getAffectedPlayer() != null) {
+			turn.getAffectedPlayer().setVelocity(turn.getAffectedPlayerVelocity());
+		}
+		
+		// add entry in turn history
+		turnHistory.offerFirst(turn);
+	}
+
+	/**
+	 * Sets the position of this player.
+	 * <br>
+	 * This will also set a new velocity after the other changes was made.
+	 * @param position The new position of the player
+	 */
+	private final void setPosition(Point position) {
+		Point oldPos = this.position;
+		// update position
+		this.position = position;
+		// event to handle changes
+		onUpdatePosition(oldPos, position);
+	}
+
+	/**
+	 * Sets the velocity of this player.
+	 * @param velocity The new velocity of the player
+	 */
+	private final void setVelocity(Vec2D velocity) {
+		Vec2D oldVelocity = this.velocity;
+		// update velocity
+		this.velocity = velocity;
+		// event to handle changes
+		onUpdateVelocity(oldVelocity, velocity);
+	}
+
+	/**
+	 * Sets whether the path is valid or not.
+	 * @param pathValid whether the path is valid or not.
+	 */
+	private final void setPathValid(boolean pathValid) {
+		this.pathValid = pathValid;
 	}
 
 }

@@ -13,7 +13,8 @@ public class VictoryRule_First implements VictoryRule {
 	public Player getWinner() {
 		List<Player> players = game.getPlayers();
 		for(Player player : players){
-			if (player.finished() && player.isfinishallowed()) {
+			boolean finish = player.getLastTurn().hasCrossedFinishLine();
+			if (finish && player.isPathValid()) {
 				return player;
 			}
 		}

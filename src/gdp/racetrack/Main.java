@@ -49,12 +49,9 @@ public class Main {
 			public void paintComponents(java.awt.Graphics g) {
 				g.drawImage(map.getImage(), 0, 0, null);
 				for (Player player : game.getPlayers()) {
-					Point lastPos = null;
-					for (Point point : player.getTurnHistory()) {
-						if (lastPos != null) {
-							g.drawLine(lastPos.getX(), lastPos.getY(), point.getX(), point.getY());
-						}
-						lastPos = point;
+					for (IrrevocableTurn turn : player.getTurnHistory()) {
+						g.drawLine(turn.getStartPosition().getX(), turn.getStartPosition().getY(),
+								turn.getEndPosition().getX(), turn.getEndPosition().getY());
 					}
 				}
 			}
