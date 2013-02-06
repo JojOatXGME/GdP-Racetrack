@@ -24,7 +24,9 @@ public final class Lists {
 			victoryRule = new ImplementationList<VictoryRule>("data/rules/victory.list", VictoryRule.class);
 			playerCollisionRule = new ImplementationList<PlayerCollisionRule>("data/rules/playercollision.list", PlayerCollisionRule.class);
 			envCollisionRule = new ImplementationList<EnvironmentCollisionRule>("data/rules/envcollision.list", EnvironmentCollisionRule.class);
-		} catch (ClassListException | IOException e) {
+		} catch (ClassListException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
