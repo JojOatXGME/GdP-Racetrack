@@ -105,7 +105,7 @@ public class MapGenerator {
 				drawLine(startPoints[i], endPoints[i], mapImage, seed+i*2, 0x000000, Math.min(size.x, size.y)/32);
 				
 		}
-		fillImage(mapImage, (absPoints[0][0].x + absPoints[0][3].x)/2, (absPoints[0][0].y + absPoints[0][3].y)/2);
+		fillImage(mapImage, (absPoints[0][0].x + absPoints[0][3].x)/2, (absPoints[0][0].y + absPoints[0][3].y)/2, Map.COLOR_BACKGROUND, Map.COLOR_TRACK);
 		
 		PerlinNoise noise = new PerlinNoise(1, 1, 1, seed);
 		double pos[] = new double[1];
@@ -119,7 +119,7 @@ public class MapGenerator {
 				y = (int)((tmpY + 1)*size.y/2);
 			}while((mapImage.getRGB(x, y)&0xFFFFFF) != Map.COLOR_TRACK);
 			pos[0] += 1; int radius = (int)((noise.getPerlinNoise(pos) + 2) * Math.min(size.x, size.y)/64);
-			drawPoint(x, y, radius, mapImage, seed+i*2);
+			drawCircle(x, y, radius, mapImage, seed+i*2);
 		}
 		
 		
@@ -164,7 +164,7 @@ public class MapGenerator {
 		
 	}
 	
-	private void drawPoint(int centerX, int centerY, int radius, BufferedImage image, int seed) {
+	private void drawCircle(int centerX, int centerY, int radius, BufferedImage image, int seed) {
 		
 		int max = Math.max(image.getHeight(), image.getWidth());
 		double scattering = radius*2;
@@ -179,24 +179,27 @@ public class MapGenerator {
 		int endX = (int) (noiseX.getPerlinNoise(pos)*scattering);
 		int endY = (int) (noiseY.getPerlinNoise(pos)*scattering);
 		
-		for(int i=0; i<=max; i++)
+		for(double r=0; r<=radius; r+=0.5)
 		{
-			pos[0] = i*8/Math.PI/max;
-			int x = (int) (Math.sin(Math.PI*2*i/max)*radius + noiseX.getPerlinNoise(pos)*scattering + centerX - startX - (endX - startX)*i/max);
-			int y = (int) (Math.cos(Math.PI*2*i/max)*radius + noiseY.getPerlinNoise(pos)*scattering + centerY - startY - (endY - startY)*i/max);
-			for(int dx = -1; dx<=1; dx++)
+			for(int i=0; i<=max; i++)
 			{
-				for(int dy = -1; dy<=1; dy++)
+				pos[0] = i*8/Math.PI/max;
+				int x = (int) (Math.sin(Math.PI*2*i/max)*r + noiseX.getPerlinNoise(pos)*scattering + centerX - startX - (endX - startX)*i/max);
+				int y = (int) (Math.cos(Math.PI*2*i/max)*r + noiseY.getPerlinNoise(pos)*scattering + centerY - startY - (endY - startY)*i/max);
+				for(int dx = -1; dx<=1; dx++)
 				{
-					int posX = Math.min(Math.max(x+dx, 0), image.getWidth()-1);
-					int posY = Math.min(Math.max(y+dy, 0), image.getHeight()-1);
-					image.setRGB(posX, posY, 0x000000);			
+					for(int dy = -1; dy<=1; dy++)
+					{
+						int posX = Math.min(Math.max(x+dx, 0), image.getWidth()-1);
+						int posY = Math.min(Math.max(y+dy, 0), image.getHeight()-1);
+						image.setRGB(posX, posY, 0x000000);
+					}
 				}
 			}
-		}	
+		}
 	}
 	
-	private void fillImage(BufferedImage image, int x, int y)
+	private void fillImage(BufferedImage image, int x, int y, int oldColor, int newColor)
 	{
 		Deque<Integer> posX = new ArrayDeque<Integer>();
 		Deque<Integer> posY = new ArrayDeque<Integer>();
@@ -206,25 +209,25 @@ public class MapGenerator {
 		{
 			x = posX.pop();
 			y = posY.pop();
-			if(x == 0 || x == image.getWidth()-1 || y == 0 || y == image.getHeight()-1) continue;
+			if(x <= 0 || x >= image.getWidth()-1 || y <= 0 || y >= image.getHeight()-1) continue;
 			
-			image.setRGB(x, y, Map.COLOR_TRACK);
-			if((image.getRGB(x-1, y)&0xFFFFFF) == Map.COLOR_BACKGROUND)
+			image.setRGB(x, y, newColor);
+			if((image.getRGB(x-1, y)&0xFFFFFF) == oldColor)
 			{
 				posX.push(x-1);
 				posY.push(y);
 			}
-			if((image.getRGB(x+1, y)&0xFFFFFF) == Map.COLOR_BACKGROUND)
+			if((image.getRGB(x+1, y)&0xFFFFFF) == oldColor)
 			{
 				posX.push(x+1);
 				posY.push(y);
 			}
-			if((image.getRGB(x, y-1)&0xFFFFFF) == Map.COLOR_BACKGROUND)
+			if((image.getRGB(x, y-1)&0xFFFFFF) == oldColor)
 			{
 				posX.push(x);
 				posY.push(y-1);
 			}
-			if((image.getRGB(x, y+1)&0xFFFFFF) == Map.COLOR_BACKGROUND)
+			if((image.getRGB(x, y+1)&0xFFFFFF) == oldColor)
 			{
 				posX.push(x);
 				posY.push(y+1);
@@ -253,7 +256,7 @@ public class MapGenerator {
 		Difficulty difficulty[] = new Difficulty[maps.length];
 		for(int i=0; i<maps.length; i++)
 		{
-			maps[i][0] = i/3+1; // numberPlayers
+			maps[i][0] = (i/3)%3+1; // numberPlayers
 			maps[i][1] = i/3; // seed
 			switch(i%3){
 			case 0:
