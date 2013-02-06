@@ -1,7 +1,7 @@
 package gdp.racetrack;
 import gdp.racetrack.Turn.TurnType;
 
-public class EnviromentCollisionRule_Bounce implements EnviromentCollisionRule {
+public class EnvironmentCollisionRule_Bounce implements EnvironmentCollisionRule {
 	
 	public void init(Game game){
 		this.game = game;
