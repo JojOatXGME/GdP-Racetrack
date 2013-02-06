@@ -21,14 +21,14 @@ public class Main {
 		final Map map = new MapGenerator().generateMap((int) (Math.random()-0.5)*2*Integer.MAX_VALUE, 3, Difficulty.NORMAL);
 		
 		System.out.println("create game rules ...");
-		PlayerCollisionRule playerCollisionRule = null;
-//				Lists.playerCollisionRule.createInstance(0);
-		EnvironmentCollisionRule envCollisionRule = null;
-//				Lists.envCollisionRule.createInstance(0);
-		TurnRule turnRule = null;
-//				Lists.turnRule.createInstance(0);
-		VictoryRule victoryRule = null;
-//				Lists.victoryRule.createInstance(0);
+		PlayerCollisionRule playerCollisionRule =
+				Lists.playerCollisionRule.createInstance(0);
+		EnvironmentCollisionRule envCollisionRule =
+				Lists.envCollisionRule.createInstance(0);
+		TurnRule turnRule =
+				Lists.turnRule.createInstance(0);
+		VictoryRule victoryRule =
+				Lists.victoryRule.createInstance(0);
 
 		final RuleSet ruleSet = new RuleSet(envCollisionRule, playerCollisionRule, turnRule, victoryRule);
 		
