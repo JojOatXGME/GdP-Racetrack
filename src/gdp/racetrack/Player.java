@@ -89,6 +89,7 @@ public abstract class Player {
 
 	private Point position = null;
 	private Vec2D velocity = null;
+	private boolean validPath = true;
 
 	public Player() {
 		turnHistoryUnmodifiable = Collections.unmodifiableList(turnHistory);
