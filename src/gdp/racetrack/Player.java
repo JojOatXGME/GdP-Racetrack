@@ -84,7 +84,7 @@ public abstract class Player {
 
 	// --- --- Player logic --- ---
 
-	private final LinkedList<Point> turnHistory = new LinkedList<>();
+	private final LinkedList<Point> turnHistory = new LinkedList<Point>();
 	private final List<Point> turnHistoryUnmodifiable;
 
 	private Point position = null;
