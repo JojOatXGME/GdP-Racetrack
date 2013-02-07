@@ -160,7 +160,7 @@ public abstract class Player {
 	 * Does the changes of the given turn.
 	 * @param turn The Turn which was made
 	 */
-	public void makeTurn(IrrevocableTurn turn) {
+	final void makeTurn(IrrevocableTurn turn) {
 		if (turn.getStartPosition() != this.position)
 			throw new IllegalArgumentException("The given turn must represent a turn of "+this);
 		
@@ -177,6 +177,18 @@ public abstract class Player {
 		
 		// add entry in turn history
 		turnHistory.offerFirst(turn);
+	}
+
+	/**
+	 * Sets the start position of this player.
+	 * @param position Start position to set
+	 * @throws IllegalStateException if the position was already set
+	 */
+	final void setStart(Point position) {
+		if (position != null)
+			throw new IllegalStateException("The start position was already set");
+		
+		setPosition(position);
 	}
 
 	/**

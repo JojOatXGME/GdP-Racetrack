@@ -1,12 +1,8 @@
 package gdp.racetrack;
 
-import gdp.racetrack.Turn.TurnType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.sun.xml.internal.txw2.IllegalSignatureException;
 
 public class Game {
 
@@ -67,7 +63,7 @@ public class Game {
 	 */
 	public void addPlayer(final Player player) throws IllegalStateException {
 		if (state != State.PREPARING)
-			throw new IllegalSignatureException("The game must have never run to change the list of players");
+			throw new IllegalStateException("The game must have never run to change the list of players");
 		
 		players.add(player);
 	}
@@ -197,7 +193,7 @@ public class Game {
 				if (!startPoints.contains(selected))
 					throw new IllegalTurnException(player+" has selected an illigal start position");
 				
-				player.setPosition(selected);
+				player.setStart(selected);
 				onPlayerChooseStart(player);
 				
 				startPoints.remove(selected);
@@ -212,31 +208,32 @@ public class Game {
 		while (state == State.RUNNING) {
 			for (Player player : players) {
 				Log.logger.fine("handle turn of "+player);
-				final Vec2D velocity = player.getVelocity();
-				final Point start = player.getPosition();
-				final boolean isPathValid = player.isPathValid();
+				final IrrevocableTurn lastTurn = player.getLastTurn();
 				final Point destination = player.turn();
 				final Turn turn = rule.getTurnResult(player, destination);
 				
-				if (turn.getTurnType() == TurnType.FORBIDDEN)
+				if (!turn.isTurnAllowed())
 					throw new IllegalTurnException("The turn of "+player+" is not allowed");
-				if (player.getPosition() != start)
+				if (player.getLastTurn() != lastTurn)
 					throw new IllegalTurnException(player+" had manipulate his position");
-				if (player.getVelocity() != velocity)
-					throw new IllegalTurnException(player+" had manipulate his velocity");
-				if (player.isPathValid() != isPathValid)
-					throw new IllegalTurnException(player+" had manipulate his path valid state");
 				
-				player.setPosition(turn.getNewPosition());
-				player.setVelocity(turn.getNewVelocity());
+				IrrevocableTurn iTurn = new IrrevocableTurn(
+						lastTurn.getEndPosition(), turn.getNewPosition(),
+						turn.getNewVelocity(), turn.crossFinishLine(),
+						turn.collidePlayer(), turn.collideEnv(),
+						lastTurn.wasPathValid() != turn.isPathValid(), turn.isPathValid(),
+						turn.getAffectedPlayer(), turn.getAffectedPlayerInfo().getVelocity());
+				
+				player.makeTurn(iTurn);
+				
 				// TODO player.setVelocity(turn.);
-				if (turn.getAffectedPlayer() != null) {
-					turn.getAffectedPlayer().setPosition(turn.getAffectedPlayerInfo().getNewPos());
-					turn.getAffectedPlayer().setVelocity(turn.getAffectedPlayerInfo().getVelocity());
-					turn.getAffectedPlayer().setPathValid(turn.getAffectedPlayerInfo().isPathValid());
-				}
+				//if (turn.getAffectedPlayer() != null) {
+				//	turn.getAffectedPlayer().setPosition(turn.getAffectedPlayerInfo().getNewPos());
+				//	turn.getAffectedPlayer().setVelocity(turn.getAffectedPlayerInfo().getVelocity());
+				//	turn.getAffectedPlayer().setPathValid(turn.getAffectedPlayerInfo().isPathValid());
+				//}
 				
-				onPlayerTurn(player, start, player.getPosition(), destination);
+				onPlayerTurn(player, lastTurn.getEndPosition(), player.getPosition(), destination);
 			}
 			
 			synchronized (this) {

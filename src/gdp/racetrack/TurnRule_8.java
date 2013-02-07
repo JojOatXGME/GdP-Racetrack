@@ -1,7 +1,12 @@
 package gdp.racetrack;
 
 public class TurnRule_8 implements TurnRule{
-	
+
+	@Override
+	public void init(final Game game) {
+		// TODO Auto-generated method stub
+	}
+
 	public boolean isTurnAllowed(Player player, Point destination) {
 		Point playerturn = player.turn();
 		if (playerturn.getX() == destination.getX()-1 && playerturn.getY() == destination.getY()-1) {
@@ -69,55 +74,53 @@ public class TurnRule_8 implements TurnRule{
 	}
 	
 	public Point[] getAllowedTurns(Player player) {
+		return getAllowedTurns(player.getPosition(), player.getVelocity());
+	}
+
+	@Override
+	public Point[] getAllowedTurns(final Point position, final Vec2D velocity) {
+		Point[] allowedturns = new Point[8];
+		Point newposition = position.add(velocity);
 		
-		Vec2D[] allowedturns = new Vec2D[7];
-		Point currentplayer = player.getPosition();
-		Vec2D currentvelocity = player.getVelocity();
-		Vec2D currentposition = currentplayer.getVec();
-		Vec2D newposition = currentposition.add(currentvelocity);
-		
-		int x = newposition.x;
-		int y = newposition.y;
+		int x = newposition.getX();
+		int y = newposition.getY();
 		// x-1 & y-1
 		x = x -1;
 		y = y -1;
-		Vec2D turnone = new Vec2D(x,y);
+		Point turnone = new Point(x,y);
 		allowedturns[0] = turnone;
 		// x & y-1
 		x = x +1;
-		Vec2D turntwo = new Vec2D(x,y);
+		Point turntwo = new Point(x,y);
 		allowedturns[1] = turntwo;
 		// x+1 & y-1
 		x = x +1;
-		Vec2D turnthree = new Vec2D(x,y);
+		Point turnthree = new Point(x,y);
 		allowedturns[2] = turnthree;
 		// x-1 & y
 		x = x -2;
 		y = y +1;
-		Vec2D turnfour = new Vec2D(x,y);
+		Point turnfour = new Point(x,y);
 		allowedturns[3] = turnfour;
 		// x+1 & y
 		x = x +2;
-		Vec2D turnfive = new Vec2D(x,y);
+		Point turnfive = new Point(x,y);
 		allowedturns[4] = turnfive;
 		// x-1 & y+1
 		x = x -2;
 		y = y +1;
-		Vec2D turnsix = new Vec2D(x,y);
+		Point turnsix = new Point(x,y);
 		allowedturns[5] = turnsix;
 		// x & y+1;
 		x = x +1;
-		Vec2D turnseven = new Vec2D(x,y);
+		Point turnseven = new Point(x,y);
 		allowedturns[6] = turnseven;
 		// x+1 & y+1
 		x = x +1;
-		Vec2D turneight = new Vec2D(x,y);
+		Point turneight = new Point(x,y);
 		allowedturns[7] = turneight;
 		
 		return allowedturns;
-	}
-	
-	public static void main(String[] args) {
 	}
 
 }
