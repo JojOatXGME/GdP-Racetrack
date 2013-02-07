@@ -47,14 +47,14 @@ public class RuleSet {
 	 * @param destination The destination of the requested turn
 	 * @return true if the turn would be allowed or false otherwise
 	 */
-	public Turn getTurnResult(Point start, Vec2D velocity, Point destination) {
-		if (turnRule.isTurnAllowed(start, velocity, destination)) {
-			Turn turn = new Turn(start, velocity, destination);
+	public Turn getTurnResult(Point start, Point destination) {
+// TODO		if (turnRule.isTurnAllowed(start, velocity destination)) {
+			Turn turn = new Turn(start, destination);
 			handleTurn(turn);
 			return turn;
-		} else {
-			return new Turn();
-		}
+//		} else {
+//			return new Turn();
+//		}
 	}
 
 	/**
@@ -118,7 +118,8 @@ public class RuleSet {
 	}
 
 	private void handleTurn(Turn turn) {
-		
+		envCollisionRule.handleCollision(turn);
+		// TODO player collision
 	}
 
 }

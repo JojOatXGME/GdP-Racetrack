@@ -19,6 +19,14 @@ public class Turn {
 		this.oldVelocity = null;
 	}
 
+	public Turn(Point position, Point destination) {
+		this.oldPosition = position;
+		this.oldVelocity = null;
+		
+		this.newPosition = destination;
+		this.newVelocity = newPosition.getVec().sub(oldPosition.getVec());
+	}
+
 	public Turn(Point position, Vec2D velocity, Point destination) {
 		this.oldPosition = position;
 		this.oldVelocity = velocity;
