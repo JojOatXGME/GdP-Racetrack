@@ -1,7 +1,5 @@
 package gdp.racetrack;
 
-import gdp.racetrack.Turn.TurnType;
-
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -85,9 +83,14 @@ public class Map {
 		return startPoints;
 	}
 	
-	public Turn getTurnResult(Point start, Point end) {
+	public Turn getTurnResult(Turn turn) {
+		Point start = turn.getOldPosition();
+		Point end = turn.getNewPosition();
 		if(mapData[start.getX()*GRIDSIZE][start.getY()*GRIDSIZE] == PointType.NONE)
-			return new Turn(start, TurnType.COLLISION_ENVIRONMENT);
+		{
+			turn.setCollideEnv(true);
+			return turn;
+		}
 		
 		double dx = (end.getX() - start.getX())*GRIDSIZE;
 		double dy = (end.getY() - start.getY())*GRIDSIZE;
@@ -110,10 +113,14 @@ public class Map {
 			
 			switch(mapData[x][y]){
 			case FINISH:
-				return new Turn(TurnType.FINISH);
+				turn.setCrossFinishLine(true);
+				return turn;
 			case NONE:
-				if(x%GRIDSIZE == 0 && y%GRIDSIZE == 0)
-					return new Turn(new Point(x/GRIDSIZE, y/GRIDSIZE), TurnType.COLLISION_ENVIRONMENT);
+				if(x%GRIDSIZE == 0 && y%GRIDSIZE == 0){
+					turn.setNewPosition(new Point(x/GRIDSIZE, y/GRIDSIZE));
+					turn.setCollideEnv(true);
+					return turn;
+				}
 				while(true){
 					int newX[] = new int[4];
 					int newY[] = new int[4];
@@ -130,8 +137,11 @@ public class Map {
 					TreeMap<Integer, Double> sortedDist = new TreeMap<Integer, Double>();
 					sortedDist.putAll(dist);
 					for(Integer j : sortedDist.keySet()){
-						if(mapData[newX[j]*GRIDSIZE][newY[j]*GRIDSIZE] != PointType.NONE && testTurn(start, newX[j], newY[j]))
-							return new Turn(new Point(newX[j], newY[j]), TurnType.COLLISION_ENVIRONMENT);
+						if(mapData[newX[j]*GRIDSIZE][newY[j]*GRIDSIZE] != PointType.NONE && testTurn(start, newX[j], newY[j])){
+							turn.setNewPosition(new Point(newX[j], newY[j]));
+							turn.setCollideEnv(true);
+							return turn;
+						}
 					}
 					int oldX = x;
 					int oldY = y;
@@ -143,8 +153,7 @@ public class Map {
 				}
 			}
 		}
-		
-		return new Turn(TurnType.OK);
+		return turn;
 	}
 
 	private boolean testTurn(Point start, int x, int y) {
