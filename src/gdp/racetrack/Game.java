@@ -224,12 +224,13 @@ public class Game {
 				if (player.getLastTurn() != lastTurn)
 					throw new IllegalTurnException(player+" has manipulated his position");
 				
+				Vec2D affectedVelocity = turn.getAffectedPlayer() == null?null:turn.getAffectedPlayerInfo().getVelocity();
 				IrrevocableTurn iTurn = new IrrevocableTurn(
 						oldPosition, turn.getNewPosition(),
 						turn.getNewVelocity(), turn.crossFinishLine(),
 						turn.collidePlayer(), turn.collideEnv(),
 						wasValidPath != turn.isPathValid(), turn.isPathValid(),
-						turn.getAffectedPlayer(), turn.getAffectedPlayerInfo().getVelocity());
+						turn.getAffectedPlayer(), affectedVelocity);
 				
 				player.makeTurn(iTurn);
 				
