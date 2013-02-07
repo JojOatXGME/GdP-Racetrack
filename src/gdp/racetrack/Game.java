@@ -220,7 +220,7 @@ public class Game {
 				final Turn turn = rule.getTurnResult(player, destination);
 				
 				if (!turn.isTurnAllowed())
-					throw new IllegalTurnException("The turn of "+player+" is not allowed");
+					throw new IllegalTurnException("The turn of "+player+" is not allowed ("+destination+")");
 				if (player.getLastTurn() != lastTurn)
 					throw new IllegalTurnException(player+" has manipulated his position");
 				
