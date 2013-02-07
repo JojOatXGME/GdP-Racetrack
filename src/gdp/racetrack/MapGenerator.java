@@ -250,6 +250,7 @@ public class MapGenerator {
 		}
 	}
 	
+	/*
 	public static void main(String args[])
 	{
 		MapGenerator mapGen = new MapGenerator();
@@ -350,5 +351,7 @@ public class MapGenerator {
 			e.printStackTrace();
 		}
 	}
+	
+	*/
 
 }
