@@ -123,7 +123,7 @@ public class RuleSet {
 	private void handleTurn(Turn turn) {
 		envCollisionRule.handleCollision(turn);
 		for (Player p : game.getPlayers()) {
-			if (p.getPosition().equals(turn.getNewPosition())) {
+			if (turn.getNewPosition().equals(p.getPosition())) {
 				playerCollisionRule.handleCollision(turn, p);
 				break;
 			}
