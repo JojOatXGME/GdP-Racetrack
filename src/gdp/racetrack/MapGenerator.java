@@ -110,6 +110,7 @@ public class MapGenerator {
 		PerlinNoise noise = new PerlinNoise(1, 1, 1, seed);
 		double pos[] = new double[1];
 		pos[0] = 0;
+		double min = Math.min(size.x, size.y)/2.0;
 		for(int i=0; i<numberPlayers*(1.0+difficultyToInt(difficulty)/2.0)/2; i++){
 			int x, y;
 			do{
@@ -117,7 +118,7 @@ public class MapGenerator {
 				pos[0] += 1; double tmpY = noise.getPerlinNoise(pos);
 				x = (int)((tmpX + 1)*size.x/2);
 				y = (int)((tmpY + 1)*size.y/2);
-			}while((mapImage.getRGB(x, y)&0xFFFFFF) != Map.COLOR_TRACK);
+			}while((mapImage.getRGB(x, y)&0xFFFFFF) != Map.COLOR_TRACK || startPoints[0].distTo(new Vec2D(x, y)) < min || startPoints[0].distTo(new Vec2D(x, y)) < min);
 			pos[0] += 1; int radius = (int)((noise.getPerlinNoise(pos) + 2) * Math.min(size.x, size.y)/64);
 			drawCircle(x, y, radius, mapImage, seed+i*2);
 		}
@@ -256,7 +257,7 @@ public class MapGenerator {
 		Difficulty difficulty[] = new Difficulty[maps.length];
 		for(int i=0; i<maps.length; i++)
 		{
-			maps[i][0] = (i/3)%3+1; // numberPlayers
+			maps[i][0] = (i/3)%4+1; // numberPlayers
 			maps[i][1] = i/3; // seed
 			switch(i%3){
 			case 0:
