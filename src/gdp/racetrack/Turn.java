@@ -2,6 +2,7 @@ package gdp.racetrack;
 
 public class Turn {
 
+	/*
 	public enum TurnType {
 		OK,
 		FORBIDDEN,
@@ -11,80 +12,108 @@ public class Turn {
 		COLLISION_PLAYER,
 		COLLISION_ENVIRONMENT,
 	}
+	*/
 
-	public Turn(Point newPosition, Vec2D newVelocity, TurnType turnType, Player affectedPlayer, PlayerInfo affectedPlayerInfo) {
-		this.newPosition = newPosition;
-		this.newVelocity = newVelocity;
-		this.turnType = turnType;
+	public Turn(Player player, Point destination) {
+		this.oldPosition = player.getPosition();
+		this.oldVelocity = player.getVelocity();
 		
-		this.affectedPlayer = affectedPlayer;
-		this.affectedPlayerInfo = affectedPlayerInfo;
+		this.newPosition = destination;
+		this.newVelocity = newPosition.getVec().sub(oldPosition.getVec());
+		this.isPathValid = player.isPathValid();
+		
+		this.crossFinishLine = false;
 	}
 
-	public Turn(TurnType turnType){
-		this.turnType = turnType;
+	public Point getOldPosition() {
+		return oldPosition;
 	}
-	
-	public Turn(Point newPosition, TurnType turnType){
-		this.newPosition = newPosition;
-		this.turnType = turnType;
+
+	public Vec2D getOldVelocity() {
+		return oldVelocity;
 	}
-	
-	
+
 	/**
 	 * @return the newPosition
 	 */
 	public Point getNewPosition() {
 		return newPosition;
 	}
+
 	/**
 	 * @param newPosition the newPosition to set
 	 */
 	public void setNewPosition(Point newPosition) {
 		this.newPosition = newPosition;
 	}
+
 	/**
 	 * @return the newVelocity
 	 */
 	public Vec2D getNewVelocity() {
 		return newVelocity;
 	}
+
 	/**
 	 * @param newVelocity the newVelocity to set
 	 */
 	public void setNewVelocity(Vec2D newVelocity) {
 		this.newVelocity = newVelocity;
 	}
-	/**
-	 * @return the turnType
-	 */
-	public TurnType getTurnType() {
-		return turnType;
-	}
-	/**
-	 * @param turnType the turnType to set
-	 */
-	public void setTurnType(TurnType turnType) {
-		this.turnType = turnType;
-	}
+
 	/**
 	 * @return the affectedPlayer
 	 */
 	public Player getAffectedPlayer() {
 		return affectedPlayer;
 	}
+
 	/**
 	 * @param affectedPlayer the affectedPlayer to set
 	 */
 	public void setAffectedPlayer(Player affectedPlayer) {
 		this.affectedPlayer = affectedPlayer;
 	}
+
+	public boolean isPathValid() {
+		return isPathValid;
+	}
+
+	public void setPathValid(boolean isPathValid) {
+		this.isPathValid = isPathValid;
+	}
+
+	public boolean crossFinishLine() {
+		return crossFinishLine;
+	}
+
+	public void setCrossFinishLine(boolean crossFinishLine) {
+		this.crossFinishLine = crossFinishLine;
+	}
+
+	public boolean collidePlayer() {
+		return collidePlayer;
+	}
+
+	public void setCollidePlayer(boolean collidePlayer) {
+		this.collidePlayer = collidePlayer;
+	}
+
+	public boolean collideEnv() {
+		return collideEnv;
+	}
+
+	public void setCollideEnv(boolean collideEnv) {
+		this.collideEnv = collideEnv;
+	}
+
 	/**
 	 * @return the affectedPlayerInfo
 	 */
 	public PlayerInfo getAffectedPlayerInfo() {
 		return affectedPlayerInfo;
 	}
+
 	/**
 	 * @param affectedPlayerInfo the affectedPlayerInfo to set
 	 */
@@ -92,9 +121,16 @@ public class Turn {
 		this.affectedPlayerInfo = affectedPlayerInfo;
 	}
 
-	private Point newPosition = null;
-	private Vec2D newVelocity = null;
-	private TurnType turnType = null;
+	private final Point oldPosition;
+	private final Vec2D oldVelocity;
+
+	private Point newPosition;
+	private Vec2D newVelocity;
+	private boolean isPathValid;
+	
+	private boolean crossFinishLine;
+	private boolean collidePlayer;
+	private boolean collideEnv;
 
 	private Player affectedPlayer = null;
 	private PlayerInfo affectedPlayerInfo = null;
