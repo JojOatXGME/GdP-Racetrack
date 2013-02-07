@@ -2,7 +2,7 @@ package gdp.racetrack;
 
 public class TurnRule_8 implements TurnRule{
 	
-	public static boolean isTurnAllowed(Player player, Point destination) {
+	public boolean isTurnAllowed(Player player, Point destination) {
 		Point playerturn = player.turn();
 		if (playerturn.getX() == destination.getX()-1 && playerturn.getY() == destination.getY()-1) {
 			return true;
@@ -34,11 +34,9 @@ public class TurnRule_8 implements TurnRule{
 		
 	}
 	
-	public static boolean isTurnAllowed(Point start, Vec2D velocity, Point destination) {
+	public boolean isTurnAllowed(Point start, Vec2D velocity, Point destination) {
 		
-		Vec2D realdestination;
-		realdestination.x = start.getX() + velocity.x;
-		realdestination.y = start.getY() + velocity.y;
+		Vec2D realdestination = new Vec2D(start.getX() + velocity.x,start.getY() + velocity.y);
 		
 		if (destination.getX() == realdestination.x -1 && destination.getY() == realdestination.y -1) {
 			return true;
@@ -70,7 +68,7 @@ public class TurnRule_8 implements TurnRule{
 		
 	}
 	
-	public Vec2D[] getAllowedTurns(Player player) {
+	public Point[] getAllowedTurns(Player player) {
 		
 		Vec2D[] allowedturns = new Vec2D[7];
 		Point currentplayer = player.getPosition();
