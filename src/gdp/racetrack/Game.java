@@ -188,7 +188,9 @@ public class Game {
 			List<Point> startPoints = new ArrayList<Point>();
 			for (Point startPoint : map.getStartPoints()) {
 				// TODO make this in map
-				startPoints.add(new Point(startPoint.getX()/Map.GRIDSIZE, startPoint.getY()/Map.GRIDSIZE));
+				Point point = new Point(startPoint.getX()/Map.GRIDSIZE, startPoint.getY()/Map.GRIDSIZE);
+				startPoints.add(point);
+				System.out.println(point);
 			}
 			Log.logger.finer(startPoints.size()+" start positions are available");
 			List<Point> unmodifiable = Collections.unmodifiableList(startPoints);
@@ -212,19 +214,21 @@ public class Game {
 			for (Player player : players) {
 				Log.logger.fine("handle turn of "+player);
 				final IrrevocableTurn lastTurn = player.getLastTurn();
+				final Point oldPosition = player.getPosition();
+				final boolean wasValidPath = player.isPathValid();
 				final Point destination = player.turn();
 				final Turn turn = rule.getTurnResult(player, destination);
 				
 				if (!turn.isTurnAllowed())
 					throw new IllegalTurnException("The turn of "+player+" is not allowed");
 				if (player.getLastTurn() != lastTurn)
-					throw new IllegalTurnException(player+" had manipulate his position");
+					throw new IllegalTurnException(player+" has manipulated his position");
 				
 				IrrevocableTurn iTurn = new IrrevocableTurn(
-						lastTurn.getEndPosition(), turn.getNewPosition(),
+						oldPosition, turn.getNewPosition(),
 						turn.getNewVelocity(), turn.crossFinishLine(),
 						turn.collidePlayer(), turn.collideEnv(),
-						lastTurn.wasPathValid() != turn.isPathValid(), turn.isPathValid(),
+						wasValidPath != turn.isPathValid(), turn.isPathValid(),
 						turn.getAffectedPlayer(), turn.getAffectedPlayerInfo().getVelocity());
 				
 				player.makeTurn(iTurn);
@@ -236,7 +240,7 @@ public class Game {
 				//	turn.getAffectedPlayer().setPathValid(turn.getAffectedPlayerInfo().isPathValid());
 				//}
 				
-				onPlayerTurn(player, lastTurn.getEndPosition(), player.getPosition(), destination);
+				onPlayerTurn(player, oldPosition, player.getPosition(), destination);
 			}
 			
 			synchronized (this) {
