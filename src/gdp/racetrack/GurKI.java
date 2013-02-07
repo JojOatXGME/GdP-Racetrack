@@ -65,7 +65,7 @@ public class GurKI implements AI, Runnable {
 		}
 
 		public Configuration decelerate(final Acceleration offset) {
-			return new Configuration(getKey(),getValue().accelerate(new Acceleration(-offset.x,-offset.y)));
+			return new Configuration(getKey(), getValue().accelerate(new Acceleration(-offset.x, -offset.y)));
 		}
 	}
 
@@ -79,15 +79,16 @@ public class GurKI implements AI, Runnable {
 		analyzer.start();
 	}
 
-	HashMap<Configuration, Double> utility = new HashMap<Configuration, Double>();
-	HashSet<Configuration> winconfigs = new HashSet<Configuration>();
-	HashMap<Configuration, HashSet<Configuration>> backward = new HashMap<Configuration, HashSet<Configuration>>();
-	HashMap<Configuration, HashSet<Configuration>> forward = new HashMap<Configuration, HashSet<Configuration>>();
+	HashMap<Configuration, Double> utility;
+	final HashSet<Configuration> winconfigs = new HashSet<Configuration>();
+	final HashMap<Configuration, HashSet<Configuration>> backward = new HashMap<Configuration, HashSet<Configuration>>();
+	final HashMap<Configuration, HashSet<Configuration>> forward = new HashMap<Configuration, HashSet<Configuration>>();
 
 	@Override
 	public void run() {
 		final Position[] map = new Position[game.getMap().getSize().x * game.getMap().getSize().y];
 		final Vec2D mapsize = game.getMap().getSize();
+		utility = new HashMap<Configuration, Double>((int) Math.pow(mapsize.x*mapsize.y,1.5));
 		for (int x = 0; x < mapsize.x; x++)
 			for (int y = 0; y < mapsize.y; y++) {
 				final Position position = new Position(x, y);
@@ -95,7 +96,7 @@ public class GurKI implements AI, Runnable {
 				switch (game.getMap().getPointType(position)) {
 				case START:
 					final Configuration startconfig = new Configuration(position, restvelocity);
-					utility.put(startconfig, 0.0);
+					utility.put(startconfig, 1.0);
 					addToGraph(nullconfig, startconfig);
 				case TRACK:
 					track.add(position);
@@ -104,20 +105,23 @@ public class GurKI implements AI, Runnable {
 			}
 		for (final Position positionfrom : track)
 			for (final Position positionto : map) {
-				final Turn turn=game.getRule().getTurnResult(positionfrom, positionto);
-				final Configuration postturnconfig=new Configuration(new Position(turn.getNewPosition()),new Velocity(turn.getNewVelocity()));
-				if(turn.isTurnAllowed()) {
+				final Turn turn = game.getRule().getTurnResult(positionfrom, positionto);
+				final Configuration postturnconfig = new Configuration(new Position(turn.getNewPosition()), new Velocity(turn.getNewVelocity()));
+				if (turn.isTurnAllowed()) {
+					double util = 0;
 					final Configuration decidedpreturnconfig = new Configuration(positionfrom, positionto);
 					for (final Acceleration offset : offsets) {
-						final Configuration undecidedpreturnconfig=decidedpreturnconfig.decelerate(offset);
+						final Configuration undecidedpreturnconfig = decidedpreturnconfig.decelerate(offset);
 						addToGraph(undecidedpreturnconfig, postturnconfig);
-						if(turn.crossFinishLine() && turn.isPathValid()) {
-							winconfigs.add(undecidedpreturnconfig);
-							utility.put(undecidedpreturnconfig, 1000.0);
+						if (turn.crossFinishLine() && turn.isPathValid()) {
+							winconfigs.add(postturnconfig);
+							util += 1000;
 						} else {
-							utility.put(undecidedpreturnconfig, 1.0);
+							util++;
 						}
 					}
+					if (util != 0)
+						utility.put(postturnconfig, util);
 				}
 			}
 		// Remind me to remove this once the map starts changing during runtime:
@@ -132,17 +136,28 @@ public class GurKI implements AI, Runnable {
 			}
 		}
 		while (true) {
-			final HashMap<Configuration, Double> newtility = new HashMap<Configuration, Double>();
+			final HashMap<Configuration, Double> newtility = new HashMap<Configuration, Double>(utility.size());
 			for (final Configuration config : utility.keySet()) {
-				final double addend = utility.get(config) / backward.get(config).size() / 2; // Yes, I know, this is the core of the whole AI and this line is not thought
-																								// through at all.
+				HashSet<Configuration> hashSet = backward.get(config);
+				if(hashSet==null)
+					continue;
+				final double addend = utility.get(config) / hashSet.size() / 2; // Yes, I know, this is the core of the whole AI and this line is not thought
+															// through at all.
 				for (final Configuration fromconfig : backward.get(config))
-					newtility.put(fromconfig, newtility.get(fromconfig) + addend);
+					utiladd(newtility, addend, fromconfig);
 			}
-			for(final Configuration winconfig : winconfigs)
-				newtility.put(winconfig, newtility.get(winconfig)+1000.0);
+			for (final Configuration winconfig : winconfigs)
+				utiladd(newtility, 1000.0, winconfig);
 			utility = newtility;
 		}
+	}
+
+	private void utiladd(final HashMap<Configuration, Double> newtility, final double addend, Configuration fromconfig) {
+		Double util = newtility.get(fromconfig);
+		if (util == null)
+			newtility.put(fromconfig, addend);
+		else
+			newtility.put(fromconfig, util + addend);
 	}
 
 	private void addToGraph(final Configuration fromconfig, final Configuration newconfig) {
@@ -183,21 +198,27 @@ public class GurKI implements AI, Runnable {
 
 		@Override
 		protected Point chooseStart(final List<Point> possiblePositions) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			final HashSet<Configuration> choices = new HashSet<Configuration>();
 			for (final Point startpoint : possiblePositions)
 				choices.add(new Configuration(new Position(startpoint), restvelocity));
-//			final HashSet<Configuration> choices = forward.get(nullconfig bzw. config);
 			return chooseNextConfig(choices);
 		}
 
 		private Point chooseNextConfig(final Collection<Configuration> choices) {
 			double utilitysum = 0;
 			for (final Configuration nextconfig : choices)
-				utilitysum += utility.get(nextconfig);
+				if(utility.get(nextconfig)!=null)
+					utilitysum += utility.get(nextconfig);
 			double select = Math.random() * utilitysum;
 			for (final Configuration nextconfig : choices)
-				if ((select -= utility.get(nextconfig)) <= 0)
-					return config.getKey().translocate(config.getValue());
+				if(utility.get(nextconfig)!=null)
+					if ((select -= utility.get(nextconfig)) <= 0)
+						return nextconfig.getKey();
 			assert 1 == 0;
 			return null;
 		}

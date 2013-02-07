@@ -185,7 +185,7 @@ public abstract class Player {
 	 * @throws IllegalStateException if the position was already set
 	 */
 	final void setStart(Point position) {
-		if (position != null)
+		if (this.position != null)
 			throw new IllegalStateException("The start position was already set");
 		
 		setPosition(position);
