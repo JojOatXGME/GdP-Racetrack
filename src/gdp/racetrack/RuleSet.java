@@ -98,7 +98,7 @@ public class RuleSet {
 	 * @return The winner of the game or null, if there is no winner yet
 	 */
 	public Player getWinner() {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return victoryRule.getWinner();
 	}
 
 	private boolean isInit = false;

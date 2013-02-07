@@ -198,11 +198,11 @@ public class GurKI implements AI, Runnable {
 
 		@Override
 		protected Point chooseStart(final List<Point> possiblePositions) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 			final HashSet<Configuration> choices = new HashSet<Configuration>();
 			for (final Point startpoint : possiblePositions)
 				choices.add(new Configuration(new Position(startpoint), restvelocity));

@@ -140,7 +140,7 @@ public abstract class Player {
 	}
 
 	public final IrrevocableTurn getLastTurn() {
-		return turnHistory.getFirst();
+		return turnHistory.isEmpty() ? null : turnHistory.getFirst();
 	}
 
 	/**
@@ -187,8 +187,8 @@ public abstract class Player {
 	final void setStart(Point position) {
 		if (this.position != null)
 			throw new IllegalStateException("The start position was already set");
-		
 		setPosition(position);
+		setVelocity(new Vec2D(0,0));
 	}
 
 	/**
