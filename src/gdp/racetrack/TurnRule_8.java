@@ -34,11 +34,9 @@ public class TurnRule_8 implements TurnRule{
 		
 	}
 	
-	public static boolean isTurnAllowed(Point start, Vec2D velocity, Point destination) {
+	public boolean isTurnAllowed(Point start, Vec2D velocity, Point destination) {
 		
-		Vec2D realdestination;
-		realdestination.x = start.getX() + velocity.x;
-		realdestination.y = start.getY() + velocity.y;
+		Vec2D realdestination =new Vec2D(start.getX() + velocity.x, start.getY() + velocity.y);
 		
 		if (destination.getX() == realdestination.x -1 && destination.getY() == realdestination.y -1) {
 			return true;
