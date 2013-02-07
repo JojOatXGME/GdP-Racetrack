@@ -48,6 +48,9 @@ public class Game {
 		this.players = new ArrayList<Player>();
 		
 		this.playersUnmodifiable = Collections.unmodifiableList(this.players);
+	
+		Log.logger.fine("Initial Rules");
+		rule.initRules(this);
 		
 		if (players != null) {
 			for (Player p : players) {
@@ -174,8 +177,6 @@ public class Game {
 		if (firstRun) {
 			// initial player
 			Log.logger.fine("The Game does run the first time. Preparing ...");
-			Log.logger.fine("Initial Rules");
-			rule.initRules(this);
 			Log.logger.fine("initial all players");
 			int i = 1;
 			for (Player p : players) {
