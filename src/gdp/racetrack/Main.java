@@ -1,6 +1,11 @@
 package gdp.racetrack;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
+
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 public class Main {
 
@@ -40,27 +45,152 @@ public class Main {
 		System.out.println("create 3 bots of the created AI ...");
 		game.addPlayer(ai, Difficulty.EASY, Difficulty.NORMAL, Difficulty.HARD);
 		
+		System.out.println("create display window ...");
+		SimpleTestFrame frame = new SimpleTestFrame(game);
+		game.registerListener(frame);
+		
 		System.out.println("run the game ...");
 		game.run();
 		
-		@SuppressWarnings("serial")
-		javax.swing.JFrame frame = new javax.swing.JFrame() {
-			@Override
-			public void paintComponents(java.awt.Graphics g) {
-				g.drawImage(map.getImage(), 0, 0, null);
-				for (Player player : game.getPlayers()) {
-					for (IrrevocableTurn turn : player.getTurnHistory()) {
-						g.drawLine(turn.getStartPosition().getX(), turn.getStartPosition().getY(),
-								turn.getEndPosition().getX(), turn.getEndPosition().getY());
+		System.out.println("FINISHED.");
+	}
+
+	private static class SimpleTestFrame implements EventListener {
+		private final Game game;
+		private final JFrame window;
+		private final JTextArea textArea;
+
+		private SimpleTestFrame(final Game game) {
+			this.game = game;
+			
+			window = new JFrame();
+			window.setLayout(new GridLayout(1, 1));
+			
+			textArea = new JTextArea();
+			textArea.setSize(window.getSize());
+			window.getContentPane().add(textArea);
+			textArea.setForeground(Color.GRAY);
+			textArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+			
+			window.setSize(800, 600);
+			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+			window.setVisible(true);
+		}
+
+		@Override
+		public void onGameStart(boolean firstTime) {
+			render();
+		}
+
+		@Override
+		public void onGamePause() {
+			render();
+			textArea.append("Game is paused");
+		}
+
+		@Override
+		public void onGameFinished() {
+			render();
+			textArea.append("Game is finshed");
+		}
+
+		@Override
+		public void onPlayerChooseStart(Player player) {}
+
+		@Override
+		public void onPlayerTurn(Player player, Point startPoint,
+				Point endPoint, Point destinationPoint) {
+			
+			render();
+		}
+
+		private void render() {
+			Map map = game.getMap();
+			char[][] mapRender = new char[map.getSize().x][map.getSize().y];
+			for (int x = 0; x < map.getSize().x; ++x) {
+				for (int y = 0; y < map.getSize().y; ++y) {
+					PointType type = map.getPointType(new Point(x,y));
+					switch (type) {
+					case TRACK:
+						mapRender[x][y] = ' ';
+						break;
+					case START: case FINISH:
+						mapRender[x][y] = ' ';
+						break;
+					case NONE:
+						mapRender[x][y] = '#';
+						break;
+					default:
+						assert 0==1 : "this should not be possible";
 					}
 				}
 			}
-		};
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		System.out.println("drawing output ...");
-		frame.setVisible(true);
-		
-		System.out.println("FINISHED.");
+			for (Player p : game.getPlayers()) {
+				Point point = p.getPosition();
+				mapRender[point.getX()][point.getY()] = (""+p.getNumber()).charAt(0);
+			}
+			StringBuilder builder = new StringBuilder();
+			for (int y = map.getSize().y-1; y >= 0; --y) {
+				for (int x = 0; x < map.getSize().x; ++x) {
+					builder.append(mapRender[x][y]);
+				}
+				builder.append('\n');
+			}
+			textArea.setText(builder.toString());
+		}
 	}
+
+/*
+	private static class TestFrame extends javax.swing.JFrame implements EventListener {
+		private static final long serialVersionUID = 1L;
+		private final Game game;
+
+		TestFrame(final Game game) {
+			this.game = game;
+			Vec2D size = game.getMap().getSize();
+			
+			setSize(size.x*Map.GRIDSIZE, size.y*Map.GRIDSIZE);
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			setVisible(true);
+			
+			repaint();
+		}
+
+		@Override
+		public void paintComponents(java.awt.Graphics g) {
+			g.drawImage(game.getMap().getImage(), 6, 6, this.getSize().width, this.getSize().height, null);
+			g.drawLine(0, 0, 256, 256);
+			for (Player player : game.getPlayers()) {
+				for (IrrevocableTurn turn : player.getTurnHistory()) {
+					g.drawLine(turn.getStartPosition().getX(), turn.getStartPosition().getY(),
+							turn.getEndPosition().getX(), turn.getEndPosition().getY());
+				}
+			}
+		}
+
+		@Override
+		public void onGameStart(boolean firstTime) { }
+
+		@Override
+		public void onGamePause() { }
+
+		@Override
+		public void onGameFinished() {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onPlayerChooseStart(Player player) { }
+
+		@Override
+		public void onPlayerTurn(Player player, Point startPoint,
+				Point endPoint, Point destinationPoint) {
+			
+			this.repaint();
+		}
+		
+	}
+*/
+
 }
