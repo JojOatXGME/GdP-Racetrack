@@ -1,5 +1,5 @@
 1
 
---- gdp.racetrack.VicturyRule_First First Player Win
-The first player who will reach the finish will win.
+--- gdp.racetrack.VictoryRule_First First-Player-Win
+The first player to reach the finish line wins.
 .
