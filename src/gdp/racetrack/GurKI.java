@@ -1,7 +1,5 @@
 package gdp.racetrack;
 
-import gdp.racetrack.Turn.TurnType;
-
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,7 +52,7 @@ public class GurKI implements AI, Runnable {
 		}
 	}
 
-	final Configuration nullconfig = new Configuration(null, (Velocity) null);
+	final Configuration nullconfig = new Configuration(null, (Velocity) null); // The limbo you are in before you choose a starting point
 
 	@SuppressWarnings("serial")
 	private class Configuration extends SimpleImmutableEntry<Position, Velocity> {
@@ -107,34 +105,19 @@ public class GurKI implements AI, Runnable {
 		for (final Position positionfrom : track)
 			for (final Position positionto : map) {
 				final Turn turn=game.getRule().getTurnResult(positionfrom, positionto);
-				final TurnType turntype = turn.getTurnType();
 				final Configuration postturnconfig=new Configuration(new Position(turn.getNewPosition()),new Velocity(turn.getNewVelocity()));
-				switch (turntype) {
-				case COLLISION_ENVIRONMENT:
-				case COLLISION_PLAYER:
-				case FORBIDDEN:
-					break;
-				case OK:
-				case FINISH:
-				case FINISH_LOOSE:
-				case FINISH_WIN:
+				if(turn.isTurnAllowed()) {
 					final Configuration decidedpreturnconfig = new Configuration(positionfrom, positionto);
 					for (final Acceleration offset : offsets) {
 						final Configuration undecidedpreturnconfig=decidedpreturnconfig.decelerate(offset);
 						addToGraph(undecidedpreturnconfig, postturnconfig);
-						switch (turntype) {
-						case OK:
-							utility.put(undecidedpreturnconfig, 1.0);
-							break;
-						default:
+						if(turn.crossFinishLine() && turn.isPathValid()) {
 							winconfigs.add(undecidedpreturnconfig);
 							utility.put(undecidedpreturnconfig, 1000.0);
-							break;
+						} else {
+							utility.put(undecidedpreturnconfig, 1.0);
 						}
 					}
-					break;
-				default:
-					break;
 				}
 			}
 		// Remind me to remove this once the map starts changing during runtime:
