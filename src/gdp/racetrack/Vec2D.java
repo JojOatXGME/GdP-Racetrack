@@ -66,6 +66,15 @@ public class Vec2D {
 	public Vec2D reverse() {
 		return new Vec2D(-this.x, -this.y);
 	}
+	
+	/**
+	 * Calculate distance between two points
+	 * @param v Point to calculate the distance to
+	 * @return Distance between this and v
+	 */
+	public double distTo(Vec2D v){
+		return Math.sqrt((this.x - v.x)*(this.x - v.x) + (this.y - v.y)*(this.y - v.y));
+	}
 
 	@Override
 	public int hashCode() {
