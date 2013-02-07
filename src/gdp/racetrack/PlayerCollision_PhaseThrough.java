@@ -6,6 +6,8 @@ public class PlayerCollision_PhaseThrough implements PlayerCollisionRule {
 	public void init(Game game) {}
 
 	@Override
-	public void handleCollision(PlayerInfo actor, PlayerInfo victim) {}
+	public void handleCollision(Turn actorTurn, Player victim) {
+		// do nothing
+	}
 
 }

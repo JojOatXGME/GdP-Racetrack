@@ -4,6 +4,7 @@ package gdp.racetrack;
  * A set of the different parts of rules.
  */
 public class RuleSet {
+	private Game game;
 
 	private final EnvironmentCollisionRule envCollisionRule;
 	private final PlayerCollisionRule playerCollisionRule;
@@ -107,6 +108,8 @@ public class RuleSet {
 		
 		isInit = true;
 		
+		this.game = game;
+		
 		Log.logger.finer("Initial evironment collision rule");
 		envCollisionRule.init(game);
 		Log.logger.finer("Initial player collision rule");
@@ -119,6 +122,12 @@ public class RuleSet {
 
 	private void handleTurn(Turn turn) {
 		envCollisionRule.handleCollision(turn);
+		for (Player p : game.getPlayers()) {
+			if (p.getPosition().equals(turn.getNewPosition())) {
+				playerCollisionRule.handleCollision(turn, p);
+				break;
+			}
+		}
 		// TODO player collision
 	}
 

@@ -9,6 +9,6 @@ public interface PlayerCollisionRule {
 	 * @param actor PlayerInfo of the Player which has caused the collision
 	 * @param victim PlayerInfo of the object
 	 */
-	public void handleCollision(PlayerInfo actor, PlayerInfo victim);
+	public void handleCollision(Turn actorTurn, Player victim);
 
 }
