@@ -8,6 +8,6 @@ public interface EnvironmentCollisionRule {
 	 * Handle the behavior of an player which have the given properties.
 	 * @param player PlayerInfo to handle behavior.
 	 */
-	public void handleCollision(PlayerInfo player);
+	public void handleCollision(Turn turn);
 
 }

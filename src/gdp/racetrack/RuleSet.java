@@ -31,7 +31,13 @@ public class RuleSet {
 	 * @return true if the turn would be allowed or false otherwise
 	 */
 	public Turn getTurnResult(Player player, Point destination) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		if (turnRule.isTurnAllowed(player, destination)) {
+			Turn turn = new Turn(player, destination);
+			handleTurn(turn);
+			return turn;
+		} else {
+			return new Turn();
+		}
 	}
 
 	/**
@@ -41,8 +47,14 @@ public class RuleSet {
 	 * @param destination The destination of the requested turn
 	 * @return true if the turn would be allowed or false otherwise
 	 */
-	public Turn getTurnResult(Point start, Point destination) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+	public Turn getTurnResult(Point start, Vec2D velocity, Point destination) {
+		if (turnRule.isTurnAllowed(start, velocity, destination)) {
+			Turn turn = new Turn(start, velocity, destination);
+			handleTurn(turn);
+			return turn;
+		} else {
+			return new Turn();
+		}
 	}
 
 	/**
@@ -51,7 +63,15 @@ public class RuleSet {
 	 * @return A array of possible turns
 	 */
 	public Turn[] getAllowedTurns(Player player) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		Point[] destinations = turnRule.getAllowedTurns(player);
+		Turn[] turns = new Turn[destinations.length];
+		for (int i = 0; i < turns.length; ++i) {
+			Turn turn = new Turn(player, destinations[i]);
+			handleTurn(turn);
+			turns[i] = turn;
+		}
+		
+		return turns;
 	}
 
 	/**
@@ -61,7 +81,15 @@ public class RuleSet {
 	 * @return A array possible turns
 	 */
 	public Turn[] getAllowedTurns(Point position, Vec2D velocity) {
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		Point[] destinations = turnRule.getAllowedTurns(position, velocity);
+		Turn[] turns = new Turn[destinations.length];
+		for (int i = 0; i < turns.length; ++i) {
+			Turn turn = new Turn(position, velocity, destinations[i]);
+			handleTurn(turn);
+			turns[i] = turn;
+		}
+		
+		return turns;
 	}
 
 	/**
@@ -87,6 +115,10 @@ public class RuleSet {
 		turnRule.init(game);
 		Log.logger.finer("Initial victory rule");
 		victoryRule.init(game);
+	}
+
+	private void handleTurn(Turn turn) {
+		
 	}
 
 }

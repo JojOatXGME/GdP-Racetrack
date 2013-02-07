@@ -1,5 +1,4 @@
 package gdp.racetrack;
-import gdp.racetrack.Turn.TurnType;
 
 public class EnvironmentCollisionRule_Bounce implements EnvironmentCollisionRule {
 	
@@ -7,19 +6,19 @@ public class EnvironmentCollisionRule_Bounce implements EnvironmentCollisionRule
 		this.game = game;
 	}
 	
-	public void handleCollision(PlayerInfo player) {
+	public void handleCollision(Turn turninfo) {
 		
-		Point newposition = player.getNewPos();
-		Point lastposition = player.getLastPos();
+		Point newposition = turninfo.getNewPosition();
+		Point lastposition = turninfo.getOldPosition();
 		
 		Map map = game.getMap();
 		
-		Turn turninfo = map.getTurnResult(lastposition, newposition);
+		map.getTurnResult(turninfo);
 		
-		if (turninfo.getTurnType() == TurnType.COLLISION_ENVIRONMENT) {
+		if (turninfo.collideEnv()) {
 			Vec2D stop = new Vec2D(0,0);
-			player.setPosition(turninfo.getNewPosition());
-			player.setVelocity(stop);
+			// turninfo.setNewPosition(turninfo.getNewPosition());
+			turninfo.setNewVelocity(stop);
 		}
 		else {
 			return;
@@ -28,4 +27,5 @@ public class EnvironmentCollisionRule_Bounce implements EnvironmentCollisionRule
 		
 	}
 	private Game game;
+
 }
