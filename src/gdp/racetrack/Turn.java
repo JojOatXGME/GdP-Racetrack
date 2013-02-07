@@ -14,15 +14,29 @@ public class Turn {
 	}
 	*/
 
-	public Turn(Player player, Point destination) {
-		this.oldPosition = player.getPosition();
-		this.oldVelocity = player.getVelocity();
+	public Turn() {
+		this.oldPosition = null;
+		this.oldVelocity = null;
+	}
+
+	public Turn(Point position, Vec2D velocity, Point destination) {
+		this.oldPosition = position;
+		this.oldVelocity = velocity;
 		
 		this.newPosition = destination;
 		this.newVelocity = newPosition.getVec().sub(oldPosition.getVec());
+	}
+
+	public Turn(Player player, Point destination) {
+		this(player.getPosition(), player.getVelocity(), destination);
+		
 		this.isPathValid = player.isPathValid();
 		
 		this.crossFinishLine = false;
+	}
+
+	public boolean isTurnAllowed() {
+		return (oldPosition != null);
 	}
 
 	public Point getOldPosition() {
@@ -126,11 +140,11 @@ public class Turn {
 
 	private Point newPosition;
 	private Vec2D newVelocity;
-	private boolean isPathValid;
 	
-	private boolean crossFinishLine;
-	private boolean collidePlayer;
-	private boolean collideEnv;
+	private boolean isPathValid = true;
+	private boolean crossFinishLine = false;
+	private boolean collidePlayer = false;
+	private boolean collideEnv = false;
 
 	private Player affectedPlayer = null;
 	private PlayerInfo affectedPlayerInfo = null;
