@@ -195,7 +195,7 @@ public class Game {
 				Log.logger.finer("Lets "+player+" choose the start position");
 				Point selected = player.chooseStart(unmodifiable);
 				if (!startPoints.contains(selected))
-					throw new IllegalTurnException(player+" has selected an illigal start position");
+					throw new IllegalTurnException(player+" has selected an illigal start position ("+selected+")");
 				
 				player.setStart(selected);
 				onPlayerChooseStart(player);
