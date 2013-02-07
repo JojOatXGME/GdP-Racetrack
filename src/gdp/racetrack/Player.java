@@ -129,6 +129,14 @@ public abstract class Player {
 	}
 
 	/**
+	 * Gets the number of the player.
+	 * @return Number of the player
+	 */
+	public final int getNumber() {
+		return playerNumber;
+	}
+
+	/**
 	 * Gets a PlayerInfo which contains the informations of the player.
 	 * Changes at the object will not have any affect on the player.
 	 * lastPosition and newPosition will have the same value by default.
