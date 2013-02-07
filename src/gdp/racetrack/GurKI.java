@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GurKI implements AI,Runnable {
+public class GurKI implements AI, Runnable {
 
 	private class Position extends Point {
 		Position(final Point point) {
@@ -62,12 +62,12 @@ public class GurKI implements AI,Runnable {
 			super(p, v);
 		}
 
-		Configuration turn(final Acceleration a) {
-			return new Configuration(getKey().translocate(getValue()), getValue().accelerate(a));
-		}
-
 		Configuration(final Position p, final Position p2) {
 			super(p, p2.sub(p));
+		}
+
+		public Configuration decelerate(final Acceleration offset) {
+			return new Configuration(getKey(),getValue().accelerate(new Acceleration(-offset.x,-offset.y)));
 		}
 	}
 
@@ -76,10 +76,24 @@ public class GurKI implements AI,Runnable {
 
 	public GurKI(final Game game) {
 		this.game = game;
+		final Thread analyzer = new Thread(this);
+		analyzer.setPriority(Thread.MIN_PRIORITY);
+		analyzer.start();
+	}
+
+	HashMap<Configuration, Double> utility = new HashMap<Configuration, Double>();
+	HashSet<Configuration> winconfigs = new HashSet<Configuration>();
+	HashMap<Configuration, HashSet<Configuration>> backward = new HashMap<Configuration, HashSet<Configuration>>();
+	HashMap<Configuration, HashSet<Configuration>> forward = new HashMap<Configuration, HashSet<Configuration>>();
+
+	@Override
+	public void run() {
+		final Position[] map = new Position[game.getMap().getSize().x * game.getMap().getSize().y];
 		final Vec2D mapsize = game.getMap().getSize();
 		for (int x = 0; x < mapsize.x; x++)
 			for (int y = 0; y < mapsize.y; y++) {
 				final Position position = new Position(x, y);
+				map[game.getMap().getSize().y * x + y] = position;
 				switch (game.getMap().getPointType(position)) {
 				case START:
 					final Configuration startconfig = new Configuration(position, restvelocity);
@@ -90,21 +104,11 @@ public class GurKI implements AI,Runnable {
 				default:
 				}
 			}
-		final Thread analyzer = new Thread(this);
-		analyzer.setPriority(Thread.MIN_PRIORITY);
-		analyzer.start();
-	}
-
-	HashMap<Configuration, Double> utility = new HashMap<Configuration, Double>();
-	HashMap<Configuration, Double> wintility = new HashMap<Configuration, Double>(); //Not a HashSet of winconfigs because the saved ressources are negligible, and this allows for some niceness further down the line
-	HashMap<Configuration, HashSet<Configuration>> backward = new HashMap<Configuration, HashSet<Configuration>>();
-	HashMap<Configuration, HashSet<Configuration>> forward = new HashMap<Configuration, HashSet<Configuration>>();
-
-	@Override
-	public void run() {
 		for (final Position positionfrom : track)
-			for (final Position positionto : track) {
-				final TurnType turntype = game.getRule().getTurnResult(positionfrom, positionto).getTurnType();
+			for (final Position positionto : map) {
+				final Turn turn=game.getRule().getTurnResult(positionfrom, positionto);
+				final TurnType turntype = turn.getTurnType();
+				final Configuration postturnconfig=new Configuration(new Position(turn.getNewPosition()),new Velocity(turn.getNewVelocity()));
 				switch (turntype) {
 				case COLLISION_ENVIRONMENT:
 				case COLLISION_PLAYER:
@@ -114,16 +118,17 @@ public class GurKI implements AI,Runnable {
 				case FINISH:
 				case FINISH_LOOSE:
 				case FINISH_WIN:
-					final Configuration fromconfig = new Configuration(positionfrom, positionto);
+					final Configuration decidedpreturnconfig = new Configuration(positionfrom, positionto);
 					for (final Acceleration offset : offsets) {
-						addToGraph(fromconfig, fromconfig.turn(offset));
+						final Configuration undecidedpreturnconfig=decidedpreturnconfig.decelerate(offset);
+						addToGraph(undecidedpreturnconfig, postturnconfig);
 						switch (turntype) {
 						case OK:
-							utility.put(fromconfig.turn(offset), 1.0);
+							utility.put(undecidedpreturnconfig, 1.0);
 							break;
 						default:
-							wintility.put(fromconfig.turn(offset), 1000.0);
-							utility.put(fromconfig.turn(offset), 1000.0);
+							winconfigs.add(undecidedpreturnconfig);
+							utility.put(undecidedpreturnconfig, 1000.0);
 							break;
 						}
 					}
@@ -132,25 +137,27 @@ public class GurKI implements AI,Runnable {
 					break;
 				}
 			}
-		//Remind me to remove this once the map starts changing during runtime:
+		// Remind me to remove this once the map starts changing during runtime:
 		final LinkedList<Configuration> checkforunreachability = new LinkedList<Configuration>(forward.keySet());
-		checkforunreachability.remove(nullconfig); //Is this dirty?
+		checkforunreachability.remove(nullconfig); // Is this dirty?
 		while (!checkforunreachability.isEmpty()) {
 			final Configuration config = checkforunreachability.pop();
 			if (!backward.containsKey(config)) {
 				checkforunreachability.addAll(forward.get(config));
-				wintility.remove(config);
+				winconfigs.remove(config);
 				forward.remove(config);
 			}
 		}
 		while (true) {
 			final HashMap<Configuration, Double> newtility = new HashMap<Configuration, Double>();
 			for (final Configuration config : utility.keySet()) {
-				final double addend = utility.get(config) / backward.get(config).size() / 2; // Yes, I know, this is the core of the whole AI and this line is not thought through at all.
+				final double addend = utility.get(config) / backward.get(config).size() / 2; // Yes, I know, this is the core of the whole AI and this line is not thought
+																								// through at all.
 				for (final Configuration fromconfig : backward.get(config))
 					newtility.put(fromconfig, newtility.get(fromconfig) + addend);
 			}
-			newtility.putAll(wintility);
+			for(final Configuration winconfig : winconfigs)
+				newtility.put(winconfig, newtility.get(winconfig)+1000.0);
 			utility = newtility;
 		}
 	}
@@ -190,7 +197,7 @@ public class GurKI implements AI,Runnable {
 			return chooseNextConfig(choices);
 //			return chooseNextConfig(forward.get(config));
 		}
-		
+
 		@Override
 		protected Point chooseStart(final List<Point> possiblePositions) {
 			final HashSet<Configuration> choices = new HashSet<Configuration>();
@@ -224,7 +231,7 @@ public class GurKI implements AI,Runnable {
 	}
 
 	@Override
-	public Player createBot(Difficulty difficulty) {
+	public Player createBot(final Difficulty difficulty) {
 		return new GurBot();
 	}
 }
