@@ -123,8 +123,9 @@ public class Point {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Point))
 			return false;
+		
 		Point other = (Point) obj;
 		if (vec == null) {
 			if (other.vec != null)

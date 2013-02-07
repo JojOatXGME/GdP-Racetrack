@@ -91,8 +91,9 @@ public class Vec2D {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Vec2D))
 			return false;
+		
 		Vec2D other = (Vec2D) obj;
 		if (x != other.x)
 			return false;
