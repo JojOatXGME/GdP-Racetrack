@@ -187,9 +187,10 @@ public class Game {
 			Log.logger.fine("Lets the player choose there start positions");
 			List<Point> startPoints = new ArrayList<Point>();
 			for (Point startPoint : map.getStartPoints()) {
-				startPoints.add(startPoint);
+				// TODO make this in map
+				startPoints.add(new Point(startPoint.getX()/Map.GRIDSIZE, startPoint.getY()/Map.GRIDSIZE));
 			}
-			Log.logger.fine(startPoints.size()+" start positions are available");
+			Log.logger.finer(startPoints.size()+" start positions are available");
 			List<Point> unmodifiable = Collections.unmodifiableList(startPoints);
 			for (Player player : players) {
 				Log.logger.finer("Lets "+player+" choose the start position");
