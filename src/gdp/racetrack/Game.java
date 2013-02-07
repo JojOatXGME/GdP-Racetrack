@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.xml.internal.txw2.IllegalSignatureException;
-
 public class Game {
 
 	public enum State {
@@ -65,7 +63,7 @@ public class Game {
 	 */
 	public void addPlayer(final Player player) throws IllegalStateException {
 		if (state != State.PREPARING)
-			throw new IllegalSignatureException("The game must have never run to change the list of players");
+			throw new IllegalStateException("The game must have never run to change the list of players");
 		
 		players.add(player);
 	}
