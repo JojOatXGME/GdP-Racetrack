@@ -122,13 +122,14 @@ public class RuleSet {
 
 	private void handleTurn(Turn turn) {
 		envCollisionRule.handleCollision(turn);
-		for (Player p : game.getPlayers()) {
-			if (turn.getNewPosition().equals(p.getPosition())) {
-				playerCollisionRule.handleCollision(turn, p);
-				break;
+		if (game.getState() != Game.State.PREPARING) {
+			for (Player p : game.getPlayers()) {
+				if (turn.getNewPosition().equals(p.getPosition())) {
+					playerCollisionRule.handleCollision(turn, p);
+					break;
+				}
 			}
 		}
-		// TODO player collision
 	}
 
 }
