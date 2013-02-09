@@ -23,7 +23,7 @@ public class Map {
 							Point tmpStartPoints[] = new Point[newStartPoints.length+1];
 							for(int i=0; i<newStartPoints.length; i++)
 								tmpStartPoints[i] = newStartPoints[i];
-							tmpStartPoints[newStartPoints.length] = new Point(x, y);
+							tmpStartPoints[newStartPoints.length] = new Point(x/GRIDSIZE, y/GRIDSIZE);
 							newStartPoints = tmpStartPoints;
 						}
 						break;

@@ -250,7 +250,6 @@ public class MapGenerator {
 		}
 	}
 	
-	/*
 	public static void main(String args[])
 	{
 		MapGenerator mapGen = new MapGenerator();
@@ -298,21 +297,18 @@ public class MapGenerator {
 				for(int j=0; j<360; j+=10)
 				{
 					Point end = new Point((int)(posX * Math.sin(Math.toRadians(j))/Map.GRIDSIZE+posX/Map.GRIDSIZE), (int)(posY * Math.cos(Math.toRadians(j))/Map.GRIDSIZE+posY/Map.GRIDSIZE));
-					Turn t = map.getTurnResult(start, end);
+					Turn t = new Turn(start, end);
+					map.getTurnResult(t);
 					
-					switch(t.getTurnType()){
-					case COLLISION_ENVIRONMENT:
+					if(t.collideEnv()){
 						turnTest.setColor(new Color(0xFF0000));
 						turnTest.drawLine(posX, posY, t.getNewPosition().getX()*Map.GRIDSIZE, t.getNewPosition().getY()*Map.GRIDSIZE);
-						break;
-					case FINISH:
+					}else if(t.crossFinishLine()){
 						turnTest.setColor(new Color(Map.COLOR_FINISH));
 						turnTest.drawLine(posX, posY, end.getX()*Map.GRIDSIZE, end.getY()*Map.GRIDSIZE);
-						break;
-					case OK:
+					}else{
 						turnTest.setColor(new Color(0x0000FF));
 						turnTest.drawLine(posX, posY, end.getX()*Map.GRIDSIZE, end.getY()*Map.GRIDSIZE);
-						break;
 					}
 				}
 				
@@ -351,7 +347,4 @@ public class MapGenerator {
 			e.printStackTrace();
 		}
 	}
-	
-	*/
-
 }
