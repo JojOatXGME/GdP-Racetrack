@@ -17,25 +17,28 @@ public class Turn {
 	public Turn() {
 		this.oldPosition = null;
 		this.oldVelocity = null;
+		this.destination = null;
 	}
 
-	public Turn(Point position, Point destination) {
+	public Turn(final Point position, final Point destination) {
 		this.oldPosition = position;
 		this.oldVelocity = null;
+		this.destination = destination;
 		
 		this.newPosition = destination;
 		this.newVelocity = newPosition.getVec().sub(oldPosition.getVec());
 	}
 
-	public Turn(Point position, Vec2D velocity, Point destination) {
+	public Turn(final Point position, final Vec2D velocity, final Point destination) {
 		this.oldPosition = position;
 		this.oldVelocity = velocity;
+		this.destination = destination;
 		
 		this.newPosition = destination;
 		this.newVelocity = newPosition.getVec().sub(oldPosition.getVec());
 	}
 
-	public Turn(Player player, Point destination) {
+	public Turn(final Player player, final Point destination) {
 		this(player.getPosition(), player.getVelocity(), destination);
 		
 		this.isPathValid = player.isPathValid();
@@ -53,6 +56,10 @@ public class Turn {
 
 	public Vec2D getOldVelocity() {
 		return oldVelocity;
+	}
+
+	public Point getDestination() {
+		return destination;
 	}
 
 	/**
@@ -145,6 +152,7 @@ public class Turn {
 
 	private final Point oldPosition;
 	private final Vec2D oldVelocity;
+	private final Point destination;
 
 	private Point newPosition;
 	private Vec2D newVelocity;
