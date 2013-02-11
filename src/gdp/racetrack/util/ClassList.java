@@ -70,6 +70,11 @@ public class ClassList {
 			Constructor<?> c = clazz.getConstructor(parameterTypes.toArray(new Class<?>[0]));
 			return c.newInstance(initargs);
 		}
+	
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
 	private static List<ClassDescription> parse(Reader input,
