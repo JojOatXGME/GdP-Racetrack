@@ -1,14 +1,18 @@
 package gdp.racetrack;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Z_Menu extends JFrame{
+public class Z_Menu extends JFrame {
+	private static final long serialVersionUID = 1L;
+	
 	private JPanel panel;
 	private JButton New_Game;
 	private JButton Load;
 	private JButton Exit;
+	
 	public Z_Menu(){
 		super();
 		Dimension dim =java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,10 +57,8 @@ public class Z_Menu extends JFrame{
 		getContentPane().add(panel);
 		setVisible(true);
 	}
-	
-	
-	
-	
+
+
 
 	public static void main(String[] args) {
 		Z_Menu Z=new Z_Menu();
