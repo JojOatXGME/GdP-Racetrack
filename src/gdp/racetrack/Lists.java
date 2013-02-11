@@ -1,8 +1,7 @@
 package gdp.racetrack;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import gdp.racetrack.util.ClassList;
 import gdp.racetrack.util.ClassListException;
@@ -35,9 +34,9 @@ public final class Lists {
 		private final Class<T> type;
 	
 		private ImplementationList(String file, Class<T> type)
-				throws FileNotFoundException, ClassListException, IOException {
+				throws ClassListException, IOException {
 			
-			super(new FileReader(file), Game.class.getClassLoader());
+			super(new InputStreamReader(Game.class.getClassLoader().getResourceAsStream(file)), Game.class.getClassLoader());
 			
 			this.type = type;
 		}
