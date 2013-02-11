@@ -33,3 +33,14 @@ Implementation liegt.
 Starten:
 --------
 Einfach die Klasse "Main" ausführen und dann mit GUI bedienen.
+
+Erweiterte Startoptionen:
+-------------------------
+* test  
+  Startet einen einfachen Test.
+* mapgen  
+  Generiert mit hilfe des Mapgenerators mehrere Maps und speichert diese als png in aktuellen Ordner.
+* listai  
+  Listet alle möglichen KI's auf.
+* listrules  
+  Listet alle möglichen Regeln auf.
