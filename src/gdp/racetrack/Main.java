@@ -13,10 +13,20 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Log.addDebugWindow();
-		// TODO if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
+		boolean test = false;
+		boolean debugwindow = false;
+		for (String arg : args) {
+			if (arg.equals("-t"))      test = true;
+			else if (arg.equals("-d")) debugwindow = true;
+		}
+		
+		if (debugwindow) Log.addDebugWindow();
+		
+		if (test) {
 			test(); return;
-		// TODO }
+		} else {
+			new Z_Menu();
+		}
 	}
 
 	private static void test() {
