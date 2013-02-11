@@ -191,8 +191,12 @@ public class GurKI implements AI, Runnable {
 		public Point turn() {
 			final HashSet<Configuration> choices = new HashSet<Configuration>();
 			for (final Turn turn : game.getRule().getAllowedTurns(this))
-				choices.add(new Configuration(new Position(turn.getNewPosition()), new Velocity(turn.getNewVelocity())));
-			return chooseNextConfig(choices);
+				choices.add(new Configuration(new Position(turn.getDestination()), new Velocity(turn.getNewVelocity())));
+			Point newPosition=chooseNextConfig(choices);
+			for (final Turn turn : game.getRule().getAllowedTurns(this))
+				if(turn.getDestination().equals(newPosition))
+					return turn.getNewPosition();
+			throw new RuntimeException();
 //			return chooseNextConfig(forward.get(config));
 		}
 
