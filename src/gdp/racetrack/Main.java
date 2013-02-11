@@ -1,5 +1,8 @@
 package gdp.racetrack;
 
+import gdp.racetrack.Lists.ImplementationList;
+import gdp.racetrack.util.ClassList.ClassDescription;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -13,20 +16,51 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		boolean test = false;
 		boolean debugwindow = false;
-		for (String arg : args) {
-			if (arg.equals("-t"))      test = true;
-			else if (arg.equals("-d")) debugwindow = true;
+		
+		int i;
+		for (i = 0; i < args.length; ++i) {
+			if (args[i].equals("-d")) debugwindow = true;
+			break;
 		}
 		
 		if (debugwindow) Log.addDebugWindow();
 		
-		if (test) {
-			test(); return;
-		} else {
-			new Z_Menu();
+		if (args.length == i+1 && args[i].equals("test")) {
+			test();
 		}
+		else if (args.length == i+1 && args[i].equals("mapgen")) {
+			MapGenerator.main(new String[0]);
+		}
+		else if (args.length == i+1 && args[i].equals("listai")) {
+			list("AI", Lists.ai);
+		}
+		else if (args.length == i+1 && args[i].equals("listrules")) {
+			list("Turn Rules",                  Lists.turnRule);
+			list("Victory Rules",               Lists.victoryRule);
+			list("Environment Collision Rules", Lists.envCollisionRule);
+			list("Player Collision Rules",      Lists.playerCollisionRule);
+		} else if (args.length == i) {
+			new Z_Menu();
+		} else {
+			System.err.println("Usage: java gdp.racetrack.Main [-d] [test|mapgen|listai|listrules]");
+			System.err.println("    or java -jar <jarfile> [-d] [test|mapgen|listai|listrules]");
+		}
+	}
+
+	private static void list(String listName, ImplementationList<?> list) {
+		System.out.println(listName);
+		for (int i=0; i < listName.length(); ++i) System.out.print('=');
+		System.out.println();
+		
+		for (ClassDescription desc : list.getList()) {
+			System.out.println("Name:  "+desc.name);
+			System.out.println("class: "+desc.clazz);
+			System.out.println(desc.description);
+			System.out.println("--- ---");
+		}
+		
+		System.out.println();
 	}
 
 	private static void test() {
