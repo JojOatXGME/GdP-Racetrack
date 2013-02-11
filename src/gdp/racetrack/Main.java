@@ -55,7 +55,7 @@ public class Main {
 		
 		for (ClassDescription desc : list.getList()) {
 			System.out.println("Name:  "+desc.name);
-			System.out.println("class: "+desc.clazz);
+			System.out.println("class: "+desc.clazz.getName());
 			System.out.println(desc.description);
 			System.out.println("--- ---");
 		}
