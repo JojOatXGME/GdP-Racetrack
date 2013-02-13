@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Game {
+public class Game implements Runnable {
 
 	public enum State {
 		/**
