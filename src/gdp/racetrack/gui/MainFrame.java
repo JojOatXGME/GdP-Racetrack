@@ -5,7 +5,9 @@ import gdp.racetrack.Difficulty;
 import gdp.racetrack.EnvironmentCollisionRule;
 import gdp.racetrack.EventListener;
 import gdp.racetrack.Game;
+import gdp.racetrack.IrrevocableTurn;
 import gdp.racetrack.Lists;
+import gdp.racetrack.Log;
 import gdp.racetrack.Map;
 import gdp.racetrack.MapGenerator;
 import gdp.racetrack.Player;
@@ -25,10 +27,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -37,7 +39,8 @@ import javax.swing.JPanel;
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
-	enum State {
+	private enum State {
+		PREPARING,
 		NEW_GAME,
 		IN_GAME
 	}
@@ -45,7 +48,9 @@ public class MainFrame extends JFrame {
 	private final JPanel topPanel;
 	private final JPanel mainPanel;
 	private final JLabel bottomLabel;
-	
+
+	private final JButton newGameButton;
+
 	private final JList<Object> turnRuleList = new JList<Object>(Lists.turnRule.getList().toArray());
 	private final JList<Object> victoryRuleList = new JList<Object>(Lists.victoryRule.getList().toArray());
 	private final JList<Object> envCollisionRuleList = new JList<Object>(Lists.envCollisionRule.getList().toArray());
@@ -53,7 +58,9 @@ public class MainFrame extends JFrame {
 	private final JList<Object> aiList = new JList<Object>(Lists.ai.getList().toArray());
 	private final JList<Difficulty> difficultyList = new JList<Difficulty>(Difficulty.values());
 
-	private State state = State.NEW_GAME;
+	private State state = State.PREPARING;
+	private Thread gameThread = null;
+	private JPanel gameField = null;
 
 	public MainFrame() {
 		super("VectorAce");
@@ -77,18 +84,21 @@ public class MainFrame extends JFrame {
 		
 		bottomLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		
-		JButton newGameButten = new JButton("New Game");
-		newGameButten.addActionListener(new ActionListener() {
+		newGameButton = new JButton("New Game");
+		newGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (state == State.NEW_GAME) {
 					startGame();
 				} else {
+					if (state == State.IN_GAME) {
+						stopGame();
+					}
 					showNewGameWizard();
 				}
 			}
 		});
-		topPanel.add(newGameButten);
+		topPanel.add(newGameButton);
 		
 		showNewGameWizard();
 		
@@ -96,6 +106,8 @@ public class MainFrame extends JFrame {
 	}
 
 	private void showNewGameWizard() {
+		newGameButton.setEnabled(false);
+		
 		mainPanel.removeAll();
 		mainPanel.setLayout(new GridLayout(3, 2, 8, 8));
 		
@@ -106,11 +118,13 @@ public class MainFrame extends JFrame {
 		mainPanel.add(createList("Player Collision Rule",      playerCollisionRuleList));
 		mainPanel.add(createList("Difficulty",                 difficultyList));
 		
-		info("Set up a new game. Press 'New Game' to start the game.");
+		info("Set up a new game. Press 'Start new Game' to start the game.");
 		
 		pack();
-		setResizable(true);
 		this.state = State.NEW_GAME;
+		
+		newGameButton.setText("Start new Game");
+		newGameButton.setEnabled(true);
 	}
 
 	private void startGame() {
@@ -139,6 +153,8 @@ public class MainFrame extends JFrame {
 			error("There was no Difficulty set.");
 			return;
 		}
+		
+		newGameButton.setEnabled(false);
 		
 		// create the new game
 		// --- get map
@@ -169,20 +185,35 @@ public class MainFrame extends JFrame {
 		
 		// show game in GUI
 		mainPanel.removeAll();
-		mainPanel.setLayout(null);
+		mainPanel.setLayout(new GridLayout(1,1));
 		
-		GameField field = new GameField(map.getImage());
-		mainPanel.add(field);
-		mainPanel.setSize(field.getSize());
-		mainPanel.setPreferredSize(field.getPreferredSize());
-		mainPanel.setMinimumSize(field.getMinimumSize());
-		mainPanel.setMaximumSize(field.getMaximumSize());
+		gameField = new GameField(map.getImage(), game);
+		mainPanel.add(gameField);
+		// mainPanel.setSize(field.getSize());
+		// mainPanel.setPreferredSize(field.getSize());
+		// mainPanel.setMinimumSize(field.getMinimumSize());
+		// mainPanel.setMaximumSize(field.getMaximumSize());
 		
-		info("Game is running.");
+		info("Game is running ...");
 		
 		pack();
 		setResizable(false);
 		this.state = State.IN_GAME;
+		
+		newGameButton.setText("New Game");
+		newGameButton.setEnabled(true);
+		
+		gameThread = new Thread(game);
+		// TODO add exception handler
+		gameThread.start();
+	}
+
+	private void stopGame() {
+		// TODO remove listener from game?
+		// mainPanel.setPreferredSize(null);
+		// mainPanel.setMinimumSize(null);
+		// mainPanel.setMaximumSize(null);
+		setResizable(true);
 	}
 
 	private JPanel createList(String name, JList<?> list) {
@@ -197,6 +228,17 @@ public class MainFrame extends JFrame {
 		return panel;
 	}
 
+	private Color getPlayerColor(Player player) {
+		switch (player.getNumber()) {
+		case 0: return Color.BLACK;
+		case 1: return Color.BLUE;
+		case 2: return Color.RED;
+		case 3: return Color.GREEN;
+		case 4: return Color.YELLOW;
+		default: return Color.BLACK;
+		}
+	}
+
 	private void info(String message) {
 		bottomLabel.setForeground(getForeground());
 		bottomLabel.setText(message);
@@ -207,19 +249,45 @@ public class MainFrame extends JFrame {
 		bottomLabel.setText(message);
 	}
 
-	private class GameField extends JComponent {
+	private class GameField extends JPanel {
 		private static final long serialVersionUID = 1L;
-		
+
 		private final Image map;
-		private GameField(Image mapImage) {
+		private final Game game;
+		private GameField(Image mapImage, Game game) {
 			this.map = mapImage;
+			this.game = game;
+			
+			this.setSize(map.getWidth(this), map.getHeight(this)); // TODO this or null
+			this.setMinimumSize(getSize());
+			this.setMaximumSize(getSize());
+			this.setPreferredSize(getSize());
 		}
 
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			g.drawImage(map, 0, 0, null);
-			g.drawLine(0, 0, 128, 128);
+			g.drawImage(map, 0, 0, this); // TODO this or null
+			if (game.getState() == Game.State.RUNNING) {
+				for (Player player : game.getPlayers()) {
+					g.setColor(getPlayerColor(player));
+					List<IrrevocableTurn> turnHistory = player.getTurnHistory();
+					if (turnHistory.size() == 0 && player.getPosition() != null) {
+						g.fillOval(player.getPosition().getX()*Map.GRIDSIZE-4, player.getPosition().getY()*Map.GRIDSIZE-4, 4, 4);
+					} else {
+						boolean first = false;
+						for (IrrevocableTurn turn : player.getTurnHistory()) {
+							final Point s = turn.getStartPosition();
+							final Point e = turn.getEndPosition();
+							if (first) {
+								g.drawOval(s.getX()*Map.GRIDSIZE-4, s.getY()*Map.GRIDSIZE-4, 4, 4);
+								first = false;
+							}
+							g.drawLine(s.getX(), s.getY(), e.getX(), e.getY());
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -232,8 +300,36 @@ public class MainFrame extends JFrame {
 
 		@Override
 		protected Point chooseStart(List<Point> possiblePositions) {
-			// TODO Auto-generated method stub
-			return null;
+			final Point[] lock = new Point[1];
+			for (final Point pos : possiblePositions) {
+				final JButton button = new JButton("+"); // TODO Use an Icon
+				gameField.add(button);
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						synchronized(lock) {
+							lock[0] = pos;
+							lock.notify();
+						}
+						gameField.removeAll();
+					}
+				});
+				button.setLocation(pos.getX()*Map.GRIDSIZE, pos.getY()*Map.GRIDSIZE);
+			}
+			info("Player "+getNumber()+" have to choose a start position");
+			
+			// wait until the player have choose a start position
+			synchronized (lock) {
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					Log.logger.log(Level.SEVERE, "Thread was interrupted", e);
+				}
+			}
+			
+			info("Game is running ...");
+			
+			return lock[0];
 		}
 	}
 
@@ -258,26 +354,20 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void onPlayerChooseStart(Player player) {
-			// TODO Auto-generated method stub
-			
+			gameField.repaint();
 		}
 
 		@Override
 		public void onPlayerTurn(Player player, Point startPoint,
 				Point endPoint, Point destinationPoint) {
-			// TODO Auto-generated method stub
 			
+			gameField.repaint();
 		}
 
 		@Override
 		public String toString() {
 			return "GUI Updater";
 		}
-	}
-
-
-	public static void main(String[] args) {
-		new MainFrame();
 	}
 
 }
