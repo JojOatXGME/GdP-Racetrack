@@ -22,7 +22,7 @@ public class Main {
 		int i;
 		for (i = 0; i < args.length; ++i) {
 			if (args[i].equals("-d")) debugwindow = true;
-			break;
+			else break;
 		}
 		
 		if (debugwindow) Log.addDebugWindow();
