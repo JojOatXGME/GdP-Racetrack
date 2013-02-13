@@ -1,6 +1,7 @@
 package gdp.racetrack;
 
 import gdp.racetrack.Lists.ImplementationList;
+import gdp.racetrack.gui.MainFrame;
 import gdp.racetrack.util.ClassList.ClassDescription;
 
 import java.awt.Color;
@@ -40,11 +41,15 @@ public class Main {
 			list("Victory Rules",               Lists.victoryRule);
 			list("Environment Collision Rules", Lists.envCollisionRule);
 			list("Player Collision Rules",      Lists.playerCollisionRule);
-		} else if (args.length == i) {
+		}
+		else if (args.length == i+1 && args[i].equals("newgui")) {
+			new MainFrame();
+		}
+		else if (args.length == i) {
 			new Z_Menu();
 		} else {
-			System.err.println("Usage: java gdp.racetrack.Main [-d] [test|mapgen|listai|listrules]");
-			System.err.println("    or java -jar <jarfile> [-d] [test|mapgen|listai|listrules]");
+			System.err.println("Usage: java gdp.racetrack.Main [-d] [test|mapgen|listai|listrules|newgui]");
+			System.err.println("    or java -jar <jarfile> [-d] [test|mapgen|listai|listrules|newgui]");
 		}
 	}
 

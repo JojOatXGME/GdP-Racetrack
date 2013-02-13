@@ -44,3 +44,5 @@ Erweiterte Startoptionen:
   Listet alle möglichen KI's auf.
 * listrules  
   Listet alle möglichen Regeln auf.
+* newgui
+  Starts a game with the new GUI.
