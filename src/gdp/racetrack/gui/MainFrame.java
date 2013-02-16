@@ -14,6 +14,7 @@ import gdp.racetrack.Player;
 import gdp.racetrack.PlayerCollisionRule;
 import gdp.racetrack.Point;
 import gdp.racetrack.RuleSet;
+import gdp.racetrack.Turn;
 import gdp.racetrack.TurnRule;
 import gdp.racetrack.VictoryRule;
 
@@ -273,14 +274,14 @@ public class MainFrame extends JFrame {
 					g.setColor(getPlayerColor(player));
 					List<IrrevocableTurn> turnHistory = player.getTurnHistory();
 					if (turnHistory.size() == 0 && player.getPosition() != null) {
-						g.fillOval(player.getPosition().getX()*Map.GRIDSIZE-4, player.getPosition().getY()*Map.GRIDSIZE-4, 4, 4);
+						g.fillOval(player.getPosition().getX()*Map.GRIDSIZE-4, player.getPosition().getY()*Map.GRIDSIZE-4, 8, 8);
 					} else {
 						boolean first = false;
 						for (IrrevocableTurn turn : player.getTurnHistory()) {
 							final Point s = turn.getStartPosition();
 							final Point e = turn.getEndPosition();
 							if (first) {
-								g.drawOval(s.getX()*Map.GRIDSIZE-4, s.getY()*Map.GRIDSIZE-4, 4, 4);
+								g.drawOval(s.getX()*Map.GRIDSIZE-4, s.getY()*Map.GRIDSIZE-4, 8, 8);
 								first = false;
 							}
 							g.drawLine(s.getX(), s.getY(), e.getX(), e.getY());
@@ -294,27 +295,33 @@ public class MainFrame extends JFrame {
 	private class HumanPlayer extends Player {
 		@Override
 		protected Point turn() {
-			// TODO Auto-generated method stub
-			return null;
+			final Point[] lock = new Point[1];
+			gameField.setLayout(null);
+			for (final Turn turn : getGame().getRule().getAllowedTurns(this)) {
+				gameField.add(new Button(lock, turn.getDestination(), turn.getDestination()));
+			}
+			info("Player "+getNumber()+" have to choose the next turn");
+			
+			// wait until the player have choose a start position
+			synchronized (lock) {
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					Log.logger.log(Level.SEVERE, "Thread was interrupted by waitung for players turn", e);
+				}
+			}
+			
+			info("Game is running ...");
+			
+			return lock[0];
 		}
 
 		@Override
 		protected Point chooseStart(List<Point> possiblePositions) {
 			final Point[] lock = new Point[1];
+			gameField.setLayout(null);
 			for (final Point pos : possiblePositions) {
-				final JButton button = new JButton("+"); // TODO Use an Icon
-				gameField.add(button);
-				button.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						synchronized(lock) {
-							lock[0] = pos;
-							lock.notify();
-						}
-						gameField.removeAll();
-					}
-				});
-				button.setLocation(pos.getX()*Map.GRIDSIZE, pos.getY()*Map.GRIDSIZE);
+				gameField.add(new Button(lock, pos, pos));
 			}
 			info("Player "+getNumber()+" have to choose a start position");
 			
@@ -323,13 +330,33 @@ public class MainFrame extends JFrame {
 				try {
 					lock.wait();
 				} catch (InterruptedException e) {
-					Log.logger.log(Level.SEVERE, "Thread was interrupted", e);
+					Log.logger.log(Level.SEVERE, "Thread was interrupted by waiting of player", e);
 				}
 			}
 			
 			info("Game is running ...");
 			
 			return lock[0];
+		}
+
+		private class Button extends JButton {
+			private static final long serialVersionUID = 1L;
+
+			Button(final Point[] lock, final Point pos, final Point dest) {
+				super("+"); // TODO use Icon
+				this.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						synchronized(lock) {
+							lock[0] = dest;
+							lock.notify();
+						}
+						gameField.removeAll();
+					}
+				});
+				this.setLocation(pos.getX()*Map.GRIDSIZE-8, pos.getY()*Map.GRIDSIZE-8);
+				this.setSize(17, 17);
+			}
 		}
 	}
 
